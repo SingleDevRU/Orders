@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Orders.OrderPage"
+             Title="Квитанция">    
+    <ContentPage.Content>
+        <StackLayout>
+            <Label Text="Квитанция" HorizontalOptions="Center"/>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Номер квитанции: "/>
+                <Label x:Name="OrderNumber" Text="{Binding Number}"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Дата: "/>
+                <Label x:Name="Date" Text="{Binding Date}"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal" Spacing="0" >
+                <Picker x:Name="ClientList" Title="Клиент" SelectedItem="{Binding Client}" x:FieldModifier="public" HorizontalOptions="FillAndExpand" SelectedIndexChanged="SelectedClient"/>
+                <Button Text="+" Clicked="AddClient" WidthRequest="60"/>
+                <Button Text="..." Clicked="OpenClient" WidthRequest="60"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Email: "/>
+                <Label x:Name="ClientEmail" Text="{Binding ClientEmail}"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Телефон: "/>
+                <Label x:Name="Phone" Text="{Binding ClientPhone}"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Исполнитель: "/>
+                <Label Text="{Binding Executor}" x:Name="Executor"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Отправить E-mail: " VerticalOptions="Center"/>
+                <CheckBox x:Name="SendEmail" IsChecked="{Binding SendMail}"/>
+            </StackLayout>
+            <Button Text="Добавить технику" Clicked="AddRow"/>
+            <ListView x:Name="OrderRows" ItemsSource="{Binding}" ItemSelected="OnSelected" HasUnevenRows="True">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <ViewCell.View>
+                                <StackLayout>
+                                    <StackLayout Orientation="Horizontal">
+                                        <Label Text="Номер: "/>
+                                        <Label x:Name="NumberRow"  Text="{Binding Number}" FontSize="Small"/>
+                                    </StackLayout>
+                                    <StackLayout Orientation="Horizontal">
+                                        <Label Text="Техника: "/>
+                                        <Label x:Name="TechnicRow" Text="{Binding Technic}" FontSize="Small"/>
+                                    </StackLayout>
+                                    <StackLayout Orientation="Horizontal">
+                                        <Label Text="Неисправность: "/>
+                                        <Label x:Name="WorkRow" Text="{Binding Malfunction}" FontSize="Small"/>
+                                    </StackLayout>
+                                </StackLayout>
+                            </ViewCell.View>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <StackLayout/>
+                <Button Text="Записать" Clicked="SaveOrder"/>
+                <Button Text="Удалить" Clicked="DeleteOrder"/>
+                <Button Text="Отмена" Clicked="Cancel"/>
+            </StackLayout>
+    </ContentPage.Content>    
+</ContentPage>

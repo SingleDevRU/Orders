@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Orders.SettingsPage"
+             Title="Настройки">
+
+    <StackLayout>        
+            <TableView>
+            <TableView.Root>
+                <TableRoot>
+                    <TableSection Title="Пользователь">
+                        <EntryCell Label="ФИО: " Placeholder="Введите ФИО пользователя" x:Name="User"/>
+                        <ViewCell>
+                            <StackLayout Orientation="Horizontal" Margin="15,0" Spacing="0">
+                                <Label Text="Префикс для 1с: " VerticalOptions="Center"/>
+                                <Entry x:Name="Prefix" MaxLength="2" WidthRequest="50"/>
+                            </StackLayout>
+                        </ViewCell>
+                    </TableSection>
+                    <TableSection Title="FTP">
+                        <EntryCell Label="Адрес: " Placeholder="Адрес FTP сервера" x:Name="FTPAdress"/>
+                        <EntryCell Label="Логин: " Placeholder="Логин для доступа к FTP" x:Name="FTPUser"/>
+                        <ViewCell>
+                            <StackLayout Orientation="Horizontal" Margin="15,0" Spacing="0">
+                                <Label Text="Пароль: " VerticalOptions="Center"/>
+                                <Entry Placeholder="Пароль для доступа к FTP" IsPassword="True" x:Name="FTPPass"/>
+                            </StackLayout>
+                        </ViewCell>
+                    </TableSection>
+                </TableRoot>
+            </TableView.Root>
+        </TableView>
+        <Button Text="Сохранить" Clicked="SaveSettings"/>
+    </StackLayout>
+</ContentPage>

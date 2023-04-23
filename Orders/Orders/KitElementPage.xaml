@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Orders.KitElementPage"
+             >
+    <ContentPage.Content>
+        <StackLayout>
+            <Label Text="Элемент комплекта" HorizontalOptions="Center"/>
+            <Entry x:Name="Name" Placeholder="Наименование" Text="{Binding Name}"/>
+            <Button Text="Сохранить" Clicked="SaveKitElement"/>
+            <Button Text="Удалить" Clicked="DeleteKitElement"/>
+            <Button Text="Отменить" Clicked="Cancel"/>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

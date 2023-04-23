@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Orders.MalfunctionPage"
+             >
+    <ContentPage.Content>
+        <StackLayout>
+            <Label Text="Неисправность" HorizontalOptions="Center"/>
+            <Entry x:Name="MalfunctionName" Text="{Binding Name}" Placeholder="Описание неисправности"/>
+            <Button Text="Сохранить" Clicked="SaveMalfunction"/>
+            <Button Text="Удалить" Clicked="DeleteMalfunction"/>
+            <Button Text="Отменить" Clicked="Cancel"/>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

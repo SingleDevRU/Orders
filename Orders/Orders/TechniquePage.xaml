@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Orders.TechniquePage"
+             >
+    <ContentPage.Content>
+        <StackLayout>
+            <Label Text="Аппаратура" HorizontalOptions="Center"/>
+            <Entry Placeholder="Наименование" Text="{Binding Name}"/>
+            <Entry Placeholder="Серийный номер" Text="{Binding SerialKey}"/>
+            <StackLayout Orientation="Horizontal">
+                <Picker x:Name="Client" Title="Клиент" SelectedItem="{Binding Parent}" HorizontalOptions="FillAndExpand" x:FieldModifier="public"/>
+                <Button Text="+" Clicked="AddClient"/>
+            </StackLayout>
+            <Button Text="Сохранить" Clicked="SaveTechnique"/>
+            <Button Text="Удалить" Clicked="DeleteTechnique"/>
+            <Button Text="Отменить" Clicked="Cancel"/>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

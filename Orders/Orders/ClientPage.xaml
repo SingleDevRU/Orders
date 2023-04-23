@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Orders.ClientPage"
+             >
+    <ContentPage.Content>
+        <StackLayout>
+            <Label Text="Клиент" HorizontalOptions="Center"/>
+            <Entry x:Name="ClientName" Placeholder="Наименование" Text="{Binding Name}"/>
+            <Entry x:Name="Inn" Placeholder="ИНН" Text="{Binding Inn}" MaxLength="12" Keyboard="Numeric"/>
+            <Entry x:Name="Email" Placeholder="Email" Text="{Binding Email}" Keyboard="Email"/>
+            <Entry x:Name="PhoneNumber" Placeholder="Номер телефона" Text="{Binding PhoneNumber}" Keyboard="Telephone" MaxLength="12"/>
+            <Button Text="Сохранить" Clicked="SaveClient"/>
+            <Button Text="Удалить" Clicked="DeleteClient"/>
+            <Button Text="Отмена" Clicked="Cancel"/>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

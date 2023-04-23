@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Orders.OrderTableRowPage">
+    <ContentPage.Content>
+        <StackLayout>
+            <Label Text="{Binding Number}"/>
+            <StackLayout Orientation="Horizontal">
+                <Picker x:Name="Techniques" SelectedItem="{Binding Technic}" Title="Техника" HorizontalOptions="FillAndExpand" x:FieldModifier="public" />
+                <Button Text="+" Clicked="AddTechniques"/>
+            </StackLayout>
+            <Entry x:Name="Malfunction" Text="{Binding Malfunction}" Placeholder="Неисправность" Completed="EntryCompleted"/>
+            <StackLayout Orientation="Horizontal">
+                <Picker x:Name="Malfunctions" Title=" Список неисправностей" HorizontalOptions="FillAndExpand" SelectedIndexChanged="SelectedMalfunction" x:FieldModifier="public"/>
+                <Button Text="+" Clicked="AddMalfunctions"/>
+            </StackLayout>
+            <Entry x:Name="Equipment" Text="{Binding Equipment}" Placeholder="Комплектация" Completed="EntryCompleted"/>
+            <StackLayout Orientation="Horizontal">
+                <Picker x:Name="Equipments" Title=" Список комплектующих" HorizontalOptions="FillAndExpand" SelectedIndexChanged="SelectedKitElement" x:FieldModifier="public"/>
+                <Button Text="+" Clicked="AddKitElement"/>
+            </StackLayout>
+            <Button Text="Сохранить" Clicked="SaveRow"/>
+            <Button Text="Удалить" Clicked="DeleteRow"/>
+            <Button Text="Отмена" Clicked="Cancel"/>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

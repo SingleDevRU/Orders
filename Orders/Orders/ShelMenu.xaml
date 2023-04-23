@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Shell xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Orders;assembly=Orders"
+             x:Class="Orders.ShelMenu">
+    <FlyoutItem Title="Квитанции">
+        <ShellContent ContentTemplate="{DataTemplate local:OrdersView}"/>
+    </FlyoutItem>
+    <FlyoutItem Title="Клиенты">
+        <ShellContent ContentTemplate="{DataTemplate local:ClientsView}"/>
+    </FlyoutItem>
+    <FlyoutItem Title="Аппаратура">
+        <ShellContent ContentTemplate="{DataTemplate local:TechniqueView}"/>
+    </FlyoutItem>
+    <FlyoutItem Title="Неисправности">
+        <ShellContent ContentTemplate="{DataTemplate local:MalfunctionView}"/>
+    </FlyoutItem>
+    <FlyoutItem Title="Комплектация">
+        <ShellContent ContentTemplate="{DataTemplate local:KitElementsView}"/>
+    </FlyoutItem>
+    <FlyoutItem Title="Настройки">
+        <ShellContent ContentTemplate="{DataTemplate local:SettingsPage}"/>
+    </FlyoutItem>
+
+</Shell>
