@@ -30,7 +30,8 @@ namespace Orders
             var ParentTechniques = App.OrdersDataBase.GetTechniqueByParent(client);
             foreach (var technique in ParentTechniques)
             {
-                string TechniqueName = technique.Name + ";;" + technique.SerialKey;
+                string addSerial = technique.SerialKey.Length > 0 ? ";;" + technique.SerialKey : "";
+                string TechniqueName = technique.Name + addSerial;
                 Techniques.Items.Add(TechniqueName);
             }
         }

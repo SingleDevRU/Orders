@@ -14,5 +14,6 @@ namespace Orders
         public string Client { get; set; }
         public string Executor { get; set; }
         public bool SendMail { get; set; }
+        public bool isLoaded { get; set; }
     }
 }

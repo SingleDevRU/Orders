@@ -7,6 +7,10 @@
         <StackLayout>
             <Label Text="Квитанция" HorizontalOptions="Center"/>
             <StackLayout Orientation="Horizontal">
+                <Label Text="Загружена в 1с: " VerticalOptions="Center"/>
+                <CheckBox x:Name="isLoaded" IsChecked="{Binding isLoaded}" IsEnabled="False" Color="DarkGray"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
                 <Label Text="Номер квитанции: "/>
                 <Label x:Name="OrderNumber" Text="{Binding Number}"/>
             </StackLayout>

@@ -5,6 +5,7 @@ using System.Xml;
 using System.IO;
 using System.Linq;
 using Xamarin.Essentials;
+using System.Xml.Linq;
 
 namespace Orders
 {
@@ -18,12 +19,12 @@ namespace Orders
                 XmlDocument xmlDoc = new XmlDocument();
                 var xmlDeclaration = xmlDoc.CreateXmlDeclaration("1.0", "UTF-8", null);
                 xmlDoc.AppendChild(xmlDeclaration);
-                XmlNode root = xmlDoc.CreateElement("Заказы");
+                XmlNode root = xmlDoc.CreateElement("Квитанции");
                 xmlDoc.AppendChild(root);
 
                 foreach (var ord in orderlist)
                 {
-                    XmlNode order = xmlDoc.CreateElement("Заказ");
+                    XmlNode order = xmlDoc.CreateElement("Квитанция");
                     XmlNode OrderID = xmlDoc.CreateElement("ИД");
                     XmlNode OrdNumber = xmlDoc.CreateElement("Номер");
                     XmlNode OrderDate = xmlDoc.CreateElement ("Дата");
@@ -103,7 +104,7 @@ namespace Orders
 
                             string[] TechniqueInfo = row.Technic.Split(new string[] {";;"},StringSplitOptions.RemoveEmptyEntries);
                             XmlText TechniqueName = xmlDoc.CreateTextNode(TechniqueInfo[0]);
-                            XmlText SerialKeyText = xmlDoc.CreateTextNode(TechniqueInfo[1]);
+                            XmlText SerialKeyText = xmlDoc.CreateTextNode(TechniqueInfo.Length == 2 ? TechniqueInfo[1] : "");
 
                             Number.AppendChild(TextNum);
                             serialKey.AppendChild(SerialKeyText);
@@ -132,6 +133,70 @@ namespace Orders
                     root.AppendChild(order);
                 }
                 xmlDoc.Save(Path.Combine(folderPath, fileName));
+            }
+        }
+
+        public static void ReadXml(string PathToFile)
+        {
+            XmlDocument doc = new XmlDocument();
+            doc.Load(PathToFile);
+
+            XmlElement root = doc.DocumentElement;
+
+            if (root == null) return;
+
+            foreach(XmlElement node in root)
+            {
+                Console.WriteLine(node.Name);
+                if(node.Name == "Контрагенты")
+                {
+                    foreach (XmlNode node2 in node.ChildNodes)
+                    {
+                        if (App.OrdersDataBase.GetClientByINN(node2.Attributes.GetNamedItem("ИНН").Value) == null)
+                        {
+                            string[] DataClient = { node2.Attributes.GetNamedItem("Наименование").Value,
+                                                    node2.Attributes.GetNamedItem("ИНН").Value
+                                                  };
+                            PostCreator.CreateClient(DataClient);
+                        }
+                    }
+                }
+                else if(node.Name == "Аппаратуры")
+                {
+                    foreach (XmlNode node2 in node.ChildNodes)
+                    {
+                        string[] DataTechnique= { node2.Attributes.GetNamedItem("Наименование").Value,
+                                                node2.Attributes.GetNamedItem("Владелец").Value,
+                                                node2.Attributes.GetNamedItem("Серийный").Value
+                                              };
+                        PostCreator.CreateTechnique(DataTechnique);
+                        Console.WriteLine(node2.Attributes.GetNamedItem("Наименование").Value + ":" + node2.Attributes.GetNamedItem("Владелец").Value + ";"
+                                          + node2.Attributes.GetNamedItem("Серийный").Value);
+                    }
+                }
+                else if (node.Name == "Неисправности")
+                {
+                    foreach (XmlNode node2 in node.ChildNodes)
+                    {
+                        if(App.OrdersDataBase.GetMalfunctionByName(node2.Attributes.GetNamedItem("Наименование").Value) == null)
+                        {
+                            PostCreator.CreateMalfunction(node2.Attributes.GetNamedItem("Наименование").Value);
+                        }
+                        Console.WriteLine(node2.Attributes.GetNamedItem("Наименование").Value);
+                    }
+                }
+                else if (node.Name == "Комплектация")
+                {
+                    foreach (XmlNode node2 in node.ChildNodes)
+                    {
+                        if(App.OrdersDataBase.GetKitElementByName(node2.Attributes.GetNamedItem("Наименование").Value) == null)
+                        {
+                            PostCreator.CreateKitElement(node2.Attributes.GetNamedItem("Наименование").Value);
+                        }
+                        Console.WriteLine(node2.Attributes.GetNamedItem("Наименование").Value);
+                    }
+                }
+
             }
         }
     }

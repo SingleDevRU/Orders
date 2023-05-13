@@ -9,12 +9,12 @@
                 <Picker x:Name="Techniques" SelectedItem="{Binding Technic}" Title="Техника" HorizontalOptions="FillAndExpand" x:FieldModifier="public" />
                 <Button Text="+" Clicked="AddTechniques"/>
             </StackLayout>
-            <Entry x:Name="Malfunction" Text="{Binding Malfunction}" Placeholder="Неисправность" Completed="EntryCompleted"/>
+            <Entry x:Name="Malfunction" Text="{Binding Malfunction}" Placeholder="Неисправность" Completed="EntryCompleted" Unfocused="EntryCompleted"/>
             <StackLayout Orientation="Horizontal">
                 <Picker x:Name="Malfunctions" Title=" Список неисправностей" HorizontalOptions="FillAndExpand" SelectedIndexChanged="SelectedMalfunction" x:FieldModifier="public"/>
                 <Button Text="+" Clicked="AddMalfunctions"/>
             </StackLayout>
-            <Entry x:Name="Equipment" Text="{Binding Equipment}" Placeholder="Комплектация" Completed="EntryCompleted"/>
+            <Entry x:Name="Equipment" Text="{Binding Equipment}" Placeholder="Комплектация" Completed="EntryCompleted" Unfocused="EntryCompleted"/>
             <StackLayout Orientation="Horizontal">
                 <Picker x:Name="Equipments" Title=" Список комплектующих" HorizontalOptions="FillAndExpand" SelectedIndexChanged="SelectedKitElement" x:FieldModifier="public"/>
                 <Button Text="+" Clicked="AddKitElement"/>

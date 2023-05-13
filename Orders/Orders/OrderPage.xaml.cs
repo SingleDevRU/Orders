@@ -133,6 +133,7 @@ namespace Orders
             Order order = (Order)BindingContext;
             order.Executor = Executor.Text;
             order.Client = (string)ClientList.SelectedItem;
+            order.isLoaded = false;
             if (string.IsNullOrEmpty(order.Client) || order.Executor == "<Не установлен>")
             {
                 await DisplayAlert("Документ не сохранён!", "Не выбран клиент или не установлен пользователь!", "ОК");
@@ -155,16 +156,17 @@ namespace Orders
 
         private async void Cancel(object sender, EventArgs e) 
         {
-            bool answer = await DisplayAlert("Внимание!", "Данные могли быть изменены.Сохранить изменения?", "да", "нет");
+            //bool answer = await DisplayAlert("Внимание!", "Данные могли быть изменены.Сохранить изменения?", "да", "нет");
 
-            if (answer)
-            {
-                Preservation();
-            }
-            else
-            {
-                DeleteNotSavedRow();
-            }
+            //if (answer)
+            //{
+            //    Preservation();
+            //}
+            //else
+            //{
+            //    DeleteNotSavedRow();
+            //}
+            DeleteNotSavedRow();
             await Navigation.PopModalAsync();
         }
 

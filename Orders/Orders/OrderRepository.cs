@@ -41,10 +41,23 @@ namespace Orders
                 return ordersdatabase.Insert(kitElement);
             }
         }
+        public KitElement GetKitElementByName(string Name)
+        {
+            var RequestResult = ordersdatabase.Query<KitElement>("SELECT * FROM KitElements WHERE Name = " + $"'{Name}'");
+            KitElement kitElement = RequestResult.Count() > 0 ? RequestResult[0] : null;
+            return kitElement;
+        }
 
         public IEnumerable<Malfunction> GetMalfunctions()
         {
             return ordersdatabase.Table<Malfunction>().ToList();
+        }
+
+        public Malfunction GetMalfunctionByName(string Name)
+        {
+            var RequestResult = ordersdatabase.Query<Malfunction>("SELECT * FROM Malfunctions WHERE Name = " + $"'{Name}'");
+            Malfunction malfunction = RequestResult.Count() > 0 ? RequestResult[0] : null;
+            return malfunction;
         }
 
         public int DeleteMalfunction(int Id)
@@ -67,6 +80,11 @@ namespace Orders
         public IEnumerable<Technique> GetTechniques()
         {
             return ordersdatabase.Table<Technique>().ToList();
+        }
+
+        public void DeleteAllTechnique()
+        {
+            ordersdatabase.DeleteAll<Technique>();
         }
 
         public int DeleteTecnique(int Id)
@@ -117,7 +135,16 @@ namespace Orders
 
         public Client GetClientByINN(string inn)
         {
-            return ordersdatabase.Query<Client>("SELECT * FROM Clients WHERE Inn = " + $"'{inn}'")[0];
+            var RequestResult = ordersdatabase.Query<Client>("SELECT * FROM Clients WHERE Inn = " + $"'{inn}'");
+            Client client = RequestResult.Count() > 0 ? RequestResult[0] : null;
+            return client;
+        }
+
+        public Client GetClientByName(string Name)
+        {
+            var RequestResult = ordersdatabase.Query<Client>("SELECT * FROM Clients WHERE Name = " + $"'{Name}'");
+            Client client = RequestResult.Count() > 0 ? RequestResult[0] : null;
+            return client;
         }
         public IEnumerable<Order> GetOrders()
         {

@@ -41,8 +41,25 @@ namespace Orders
 
         private async void DownloadFromFTP(object sender, EventArgs e)
         {
-            
-            await DisplayAlert("Download", DependencyService.Get<IFtpWebRequest>().Download("ftp://192.168.0.107/1cToOrders.xml", Path.Combine(folderPath, "1cToOrders.xml"), "FTPUser", "FTP333x333x"), "ok");
+            string[] setings = { Preferences.Get("FTPAdress", ""),
+                                 Preferences.Get("FTPUser", ""),
+                                 Preferences.Get("FTPPass", ""),
+                                 Preferences.Get("Prefix", "")
+                               };
+
+            foreach (string seting in setings)
+            {
+                if (string.IsNullOrEmpty(seting))
+                {
+                    await DisplayAlert("Файл не выгружен!", "Не заполнены настройки!", "ОК");
+                    return;
+                }
+            }
+            App.OrdersDataBase.DeleteAllTechnique();
+            string FTPAdress = setings[0][setings[0].Length - 1] == '/' ? setings[0] + "ExpDataMobile.xml" : setings[0] + "/ExpDataMobile.xml";
+            await DisplayAlert("Download", DependencyService.Get<IFtpWebRequest>().Download(FTPAdress, Path.Combine(folderPath, "ExpDataMobile.xml"), "FTPUser", "FTP333x333x"), "ok");
+            FileList.ItemsSource = Directory.GetFiles(folderPath).Select(f => Path.GetFileName(f));
+            XML.ReadXml(Path.Combine(folderPath, "ExpDataMobile.xml"));
 
         }
 

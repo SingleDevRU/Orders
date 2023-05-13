@@ -50,9 +50,9 @@ namespace Orders
             Technique technique = (Technique)BindingContext;
 			technique.Parent = (string)Client.SelectedItem;
 			
-            if(string.IsNullOrEmpty(technique.Name) || string.IsNullOrEmpty(technique.SerialKey))
+            if(string.IsNullOrEmpty(technique.Name))
 			{
-                await DisplayAlert("Техника не сохранена!", "Не заполнено наименование или серийный номер!", "ОК");
+                await DisplayAlert("Техника не сохранена!", "Не заполнено наименование!", "ОК");
                 return;
 			}
             
@@ -71,8 +71,9 @@ namespace Orders
                 OrderTableRowPage OrdTablPage = (OrderTableRowPage)Application.Current.MainPage.Navigation.ModalStack[1];
                 if ((string)ordPage.ClientList.SelectedItem == (string)Client.SelectedItem)
                 {
-                    OrdTablPage.Techniques.Items.Add(technique.Name + ";;" + technique.SerialKey);
-                    OrdTablPage.Techniques.SelectedItem = technique.Name + ";;" + technique.SerialKey;
+                    string addSerial = technique.SerialKey.Length > 0 ? ";;" + technique.SerialKey : "";
+                    OrdTablPage.Techniques.Items.Add(technique.Name + addSerial);
+                    OrdTablPage.Techniques.SelectedItem = technique.Name + addSerial;
                 }
             }
             catch(Exception ex)
