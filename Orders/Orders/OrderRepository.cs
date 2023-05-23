@@ -89,14 +89,6 @@ namespace Orders
 
             return laststr.Count == 0 ? 0 : laststr[0].Id;
         }
-
-        public int GetLastMalfunctionID()
-        {
-            var laststr = ordersdatabase.Query<Technique>("SELECT Id FROM Malfunctions WHERE Id = (SELECT MAX(Id) FROM Malfunctions)");
-
-            return laststr.Count == 0 ? 0 : laststr[0].Id;
-        }
-
         public IEnumerable<Technique> GetTechniques()
         {
             return ordersdatabase.Table<Technique>().ToList();

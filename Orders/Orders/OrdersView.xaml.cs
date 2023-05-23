@@ -29,7 +29,6 @@ namespace Orders
             OrdersList.ItemsSource = App.OrdersDataBase.GetOrders();
             base.OnAppearing();
         }
-
         private async void OnSelected(object sender, SelectedItemChangedEventArgs e) 
         {
             Order SelectedOrder = (Order)e.SelectedItem;
@@ -38,7 +37,6 @@ namespace Orders
             await Navigation.PushModalAsync(orderPage);
             
         }
-
         private async void SaveXML(object sender, EventArgs e)
         {
             Settings settings = new Settings
