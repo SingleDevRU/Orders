@@ -5,6 +5,10 @@
              Title="Квитанции">
     <ContentPage.Content>
         <StackLayout>
+            <StackLayout x:Name="UploadStatus" IsVisible="false">
+                <Label Text="Выгрузка" HorizontalOptions="Center"/>
+                <ProgressBar x:Name="UploadProgress"/>
+            </StackLayout>
             <ListView x:Name="OrdersList" ItemsSource="{Binding}" ItemSelected="OnSelected" HasUnevenRows="True" SeparatorColor="Black">
                 <ListView.ItemTemplate>
                     <DataTemplate>

@@ -193,12 +193,13 @@ namespace Orders
                 {
                     foreach (XmlNode node2 in node.ChildNodes)
                     {
-                        string[] DataTechnique = {
-                                                   node2.Attributes.GetNamedItem("Код").Value,
-                                                   node2.Attributes.GetNamedItem("Наименование").Value,
-                                                   node2.Attributes.GetNamedItem("Владелец").Value,
-                                                   node2.Attributes.GetNamedItem("Серийный").Value
-                                                 };
+                        Dictionary<string, string> DataTechnique = new Dictionary<string, string>
+                        {
+                            {"Код", node2.Attributes.GetNamedItem("Код").Value},
+                            {"Наименование", node2.Attributes.GetNamedItem("Наименование").Value},
+                            {"Владелец", node2.Attributes.GetNamedItem("Владелец").Value},
+                            {"Серийный", node2.Attributes.GetNamedItem("Серийный").Value}
+                        };
                         PostCreator.CreateTechnique(DataTechnique);
                     }
                 }
@@ -206,20 +207,14 @@ namespace Orders
                 {
                     foreach (XmlNode node2 in node.ChildNodes)
                     {
-                        if (App.OrdersDataBase.GetMalfunctionByName(node2.Attributes.GetNamedItem("Наименование").Value) == null)
-                        {
-                            PostCreator.CreateMalfunction(node2.Attributes.GetNamedItem("Наименование").Value);
-                        }
+                        PostCreator.CreateMalfunction(node2.Attributes.GetNamedItem("Наименование").Value);                        
                     }
                 }
                 else if (node.Name == "Комплектация")
                 {
                     foreach (XmlNode node2 in node.ChildNodes)
                     {
-                        if (App.OrdersDataBase.GetKitElementByName(node2.Attributes.GetNamedItem("Наименование").Value) == null)
-                        {
-                            PostCreator.CreateKitElement(node2.Attributes.GetNamedItem("Наименование").Value);
-                        }
+                        PostCreator.CreateKitElement(node2.Attributes.GetNamedItem("Наименование").Value);
                     }
                 }
             }

@@ -12,10 +12,18 @@
             </StackLayout>
             <Entry Placeholder="Наименование" Text="{Binding Name}"/>
             <Entry Placeholder="Серийный номер" Text="{Binding SerialKey}"/>
-            <StackLayout Orientation="Horizontal">
-                <Picker x:Name="Client" Title="Клиент" SelectedItem="{Binding Parent}" HorizontalOptions="FillAndExpand" x:FieldModifier="public"/>
-                <Button Text="+" Clicked="AddClient"/>
-            </StackLayout>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Picker x:Name="Client" Grid.Column="0" Grid.Row="0" Title="Клиент" SelectedItem="{Binding Parent}" HorizontalOptions="FillAndExpand" x:FieldModifier="public"/>
+                <Button Text="+" Grid.Column="1" Grid.Row="0" Clicked="AddClient"/>
+            </Grid>
             <Button Text="Сохранить" Clicked="SaveTechnique"/>
             <Button Text="Удалить" Clicked="DeleteTechnique"/>
             <Button Text="Отменить" Clicked="Cancel"/>

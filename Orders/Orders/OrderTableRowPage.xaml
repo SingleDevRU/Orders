@@ -5,20 +5,44 @@
     <ContentPage.Content>
         <StackLayout>
             <Label Text="{Binding Number}"/>
-            <StackLayout Orientation="Horizontal">
-                <Picker x:Name="Techniques" SelectedItem="{Binding Technic}" Title="Техника" HorizontalOptions="FillAndExpand" x:FieldModifier="public" />
-                <Button Text="+" Clicked="AddTechniques"/>
-            </StackLayout>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Picker x:Name="Techniques" Grid.Column="0" Grid.Row="0" SelectedItem="{Binding Technic}" Title="Техника" HorizontalOptions="FillAndExpand" x:FieldModifier="public" />
+                <Button Text="+" Grid.Column="1" Grid.Row="0" Clicked="AddTechniques"/>
+            </Grid>
             <Entry x:Name="Malfunction" Text="{Binding Malfunction}" Placeholder="Неисправность" Completed="EntryCompleted" Unfocused="EntryCompleted"/>
-            <StackLayout Orientation="Horizontal">
-                <Picker x:Name="Malfunctions" Title=" Список неисправностей" HorizontalOptions="FillAndExpand" SelectedIndexChanged="SelectedMalfunction" x:FieldModifier="public"/>
-                <Button Text="+" Clicked="AddMalfunctions"/>
-            </StackLayout>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Picker x:Name="Malfunctions" Grid.Column="0" Grid.Row="0" Title=" Список неисправностей" HorizontalOptions="FillAndExpand" SelectedIndexChanged="SelectedMalfunction" x:FieldModifier="public"/>
+                <Button Text="+"  Grid.Column="1" Grid.Row="0" Clicked="AddMalfunctions"/>
+            </Grid>
             <Entry x:Name="Equipment" Text="{Binding Equipment}" Placeholder="Комплектация" Completed="EntryCompleted" Unfocused="EntryCompleted"/>
-            <StackLayout Orientation="Horizontal">
-                <Picker x:Name="Equipments" Title=" Список комплектующих" HorizontalOptions="FillAndExpand" SelectedIndexChanged="SelectedKitElement" x:FieldModifier="public"/>
-                <Button Text="+" Clicked="AddKitElement"/>
-            </StackLayout>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Picker x:Name="Equipments" Grid.Column="0" Grid.Row="0" Title=" Список комплектующих" HorizontalOptions="FillAndExpand" SelectedIndexChanged="SelectedKitElement" x:FieldModifier="public"/>
+                <Button Text="+" Grid.Column="1" Grid.Row="0" Clicked="AddKitElement"/>
+            </Grid>
             <Button Text="Сохранить" Clicked="SaveRow"/>
             <Button Text="Удалить" Clicked="DeleteRow"/>
             <Button Text="Отмена" Clicked="Cancel"/>

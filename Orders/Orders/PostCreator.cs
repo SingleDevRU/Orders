@@ -19,26 +19,28 @@ namespace Orders
             Client client = App.OrdersDataBase.GetClientByINN(DataClient["ИНН"]);
             if(client != null)
             {
+                bool isChanged = false;
                 if( client.Inn != DataClient["ИНН"])
                 {
                     client.Inn = DataClient["ИНН"];
+                    isChanged = true;
                 }
-                else if(client.Name != DataClient["Наименование"])
+                if(client.Name != DataClient["Наименование"])
                 {
                     client.Name = DataClient["Наименование"];
+                    isChanged = true;
                 }
-                else if(client.PhoneNumber != DataClient["Телефон"])
+                if(client.PhoneNumber != DataClient["Телефон"])
                 {
                     client.PhoneNumber = DataClient["Телефон"];
+                    isChanged = true;
                 }
-                else if(client.Email != DataClient["Email"])
+                if(client.Email != DataClient["Email"])
                 {
                     client.Email = DataClient["Email"];
+                    isChanged = true;
                 }
-                else
-                {
-                    return;
-                }
+                if (!isChanged) return;
             }
             else
             {
@@ -59,38 +61,50 @@ namespace Orders
         /// Создает запись об Аппаратуре в бд
         /// </summary>
         /// <param name="DataTechnique">
-        /// массив данных об аппаратуре где:
-        /// [0] - Код
-        /// [1] - Наименование
-        /// [2] - Владелец
-        /// [3] - Серийный номер
+        /// словарь с данными об аппаратуре
         /// </param>
-        public static void CreateTechnique(string[] DataTechnique)
-        {   
-            if(App.OrdersDataBase.GetTechniqueByCode(DataTechnique[0]) != null) return;            
-            
-            string parent;
+        public static void CreateTechnique(Dictionary<string,string> DataTechnique)
+        {
+            Client client = App.OrdersDataBase.GetClientByName(DataTechnique["Владелец"]);
+            string parent = client != null ? (client.Code + ": " + client.Name) : "";
 
-            Client client = App.OrdersDataBase.GetClientByName(DataTechnique[2]);
-            if (client == null) return;
-            parent = client.Code + ": " + client.Name;
-
-            Technique technique = App.OrdersDataBase.GetTechniqueByParams(DataTechnique[1], DataTechnique[3], parent);
+            Technique technique = App.OrdersDataBase.GetTechniqueByParams(DataTechnique["Наименование"], DataTechnique["Серийный"], parent);
 
             if (technique == null)
             {
                 technique = new Technique
                 {
-                    Code = DataTechnique[0],
-                    Name = DataTechnique[1],
+                    Code = DataTechnique["Код"],
+                    Name = DataTechnique["Наименование"],
                     Parent = parent,
-                    SerialKey = DataTechnique[3]
+                    SerialKey = DataTechnique["Серийный"]
 
                 };                
             }
             else
             {
-                technique.Code = DataTechnique[0];
+                bool isChanged = false;
+                if(technique.Code != DataTechnique["Код"])
+                {
+                    technique.Code = DataTechnique["Код"];
+                    isChanged = true;
+                }
+                if(technique.Name != DataTechnique["Наименование"])
+                {
+                    technique.Name = DataTechnique["Наименование"];
+                    isChanged = true;
+                }
+                if(technique.Parent != parent)
+                {
+                    technique.Parent = parent;
+                    isChanged = true;
+                }
+                if(technique.SerialKey != DataTechnique["Серийный"])
+                {
+                    technique.SerialKey = DataTechnique["Серийный"];
+                    isChanged = true;
+                }
+                if (!isChanged) return;
             }
             App.OrdersDataBase.SaveTechnique(technique);
 
@@ -98,17 +112,21 @@ namespace Orders
         
         public static void CreateMalfunction(string name)
         {
+            if (App.OrdersDataBase.GetMalfunctionByName(name) != null) return;
             Malfunction malfunction = new Malfunction
             {
-                Name = name,
+                Code = CodeGenerator.GetCodeForMalfunction(),
+                Name = name
             };
             App.OrdersDataBase.SaveMalfunction(malfunction);
         }
         public static void CreateKitElement(string name)
         {
+            if (App.OrdersDataBase.GetKitElementByName(name) != null) return;
             KitElement kitElement = new KitElement
             {
-                Name = name,
+                Code = CodeGenerator.GetCodeForKitElement(),
+                Name = name
             };
             App.OrdersDataBase.SaveKitElement(kitElement);
         }

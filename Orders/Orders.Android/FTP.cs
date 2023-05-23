@@ -16,10 +16,11 @@ namespace Orders.Droid
     {
         public FTP() { }
 
-        public string Upload(string FtpUrl, string FileName, string UserName, string Password, string UploadDirectory = "")
+        public async Task<string> Upload(string FtpUrl, string FileName, string UserName, string Password, string UploadDirectory = "")
         {
             try
             {
+                await Task.Yield();
                 string PureName = new FileInfo(FileName).Name;
                 string UploadURL = $"{FtpUrl}{UploadDirectory}/{PureName}";
                 FtpWebRequest req = (FtpWebRequest)FtpWebRequest.Create(UploadURL);
@@ -36,7 +37,7 @@ namespace Orders.Droid
                 stream.Write(data, 0, data.Length);
                 stream.Close();
                 FtpWebResponse resp = (FtpWebResponse)req.GetResponse();
-                return resp.StatusDescription;
+                return "Выгрузка завершена";
 
             }
             catch(Exception e)
