@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Orders
 {
@@ -8,7 +9,7 @@ namespace Orders
     {
         string Upload(string FtpUrl, string FileName, string UserName, string Password, string UploadDirectory = "");
 
-        string Download(string FtpUrl, string PathTo, string UserName, string Password);
+        Task<string> Download(string FtpUrl, string PathTo, string UserName, string Password);
 
     }
 }

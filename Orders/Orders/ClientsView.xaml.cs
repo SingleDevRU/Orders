@@ -14,12 +14,13 @@ namespace Orders
 	{
 		public ClientsView ()
 		{
-			InitializeComponent ();
+            InitializeComponent ();
 		}
 
         protected override void OnAppearing()
         {
-			FillClientList();
+            
+            FillClientList();
 
             base.OnAppearing();
         }
@@ -43,7 +44,14 @@ namespace Orders
 
         private async void CreateClient(object sender, EventArgs e)
 		{
-			Client client = new Client();
+			Client client = new Client
+			{
+				Code = CodeGenerator.GetUIDForClient(),
+				Email = "",
+				Inn = "",
+				Name = "",
+				PhoneNumber = ""
+			};
 			ClientPage page = new ClientPage
 			{
 				BindingContext = client

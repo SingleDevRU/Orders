@@ -48,19 +48,19 @@ namespace Orders
             {
                 if (page is OrderPage OrdPage)
                 {
-                    if (!OrdPage.ClientList.Items.Contains(client.Name + ";;" + client.Inn))
+                    if (!OrdPage.ClientList.Items.Contains(client.Code + ": " + client.Name))
                     {
-                        OrdPage.ClientList.Items.Add(client.Name + ";;" + client.Inn);
-                        OrdPage.ClientList.SelectedItem = client.Name + ";;" + client.Inn;
+                        OrdPage.ClientList.Items.Add(client.Code + ": " + client.Name);
+                        OrdPage.ClientList.SelectedItem = client.Code + ": " + client.Name;
 
                     }
                 }
                 else if (page is TechniquePage TechPage)
                 {
-                    if (!TechPage.Client.Items.Contains(client.Name + ";;" + client.Inn))
+                    if (!TechPage.Client.Items.Contains(client.Code + ": " + client.Name))
                     {
-                        TechPage.Client.Items.Add(client.Name + ";;" + client.Inn);
-                        TechPage.Client.SelectedItem = client.Name + ";;" + client.Inn;
+                        TechPage.Client.Items.Add(client.Code + ": " + client.Name);
+                        TechPage.Client.SelectedItem = client.Code + ": " + client.Name;
                     }
                 }
             }

@@ -23,14 +23,15 @@ namespace Orders
             var clients = App.OrdersDataBase.GetClients();
             foreach (var client in clients)
             {
-                Client.Items.Add(client.Name + ";;" + client.Inn);
+                Client.Items.Add(client.Code + ": " + client.Name);
             }
         }
 
         private void AddClient(object sender, EventArgs e)
         {
             Client newclient = new Client
-            { 
+            {
+                Code = CodeGenerator.GetUIDForClient(),
                 Email = "",
                 Inn = "",
                 Name = "",
@@ -57,8 +58,11 @@ namespace Orders
 			}
             
             App.OrdersDataBase.SaveTechnique(technique);
-            
-            AddTechniqueInTechniquesList(technique);
+
+            if (Application.Current.MainPage.Navigation.ModalStack[0] is OrderPage)
+            {
+                AddTechniqueInTechniquesList(technique);
+            }
 
             await Navigation.PopModalAsync();
         }
@@ -67,13 +71,13 @@ namespace Orders
         {
             try
             {
-                OrderPage ordPage = (OrderPage)Application.Current.MainPage.Navigation.ModalStack[0];
+                OrderPage ordPage = (OrderPage)Application.Current.MainPage.Navigation.ModalStack[0];              
                 OrderTableRowPage OrdTablPage = (OrderTableRowPage)Application.Current.MainPage.Navigation.ModalStack[1];
                 if ((string)ordPage.ClientList.SelectedItem == (string)Client.SelectedItem)
                 {
-                    string addSerial = technique.SerialKey.Length > 0 ? ";;" + technique.SerialKey : "";
-                    OrdTablPage.Techniques.Items.Add(technique.Name + addSerial);
-                    OrdTablPage.Techniques.SelectedItem = technique.Name + addSerial;
+                    string AddSerial = technique.SerialKey.Length > 0 ? ": " + technique.SerialKey : "";
+                    OrdTablPage.Techniques.Items.Add(technique.Code + ": " + technique.Name + AddSerial);
+                    OrdTablPage.Techniques.SelectedItem = technique.Code + ": " + technique.Name + AddSerial;
                 }
             }
             catch(Exception ex)

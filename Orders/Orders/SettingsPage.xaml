@@ -4,7 +4,11 @@
              x:Class="Orders.SettingsPage"
              Title="Настройки">
 
-    <StackLayout>        
+    <StackLayout>
+        <StackLayout x:Name="LoadStatus" IsVisible="False">
+            <Label Text="Загрузка" HorizontalOptions="Center"/>
+            <ProgressBar x:Name="ProgressLoad"/>
+        </StackLayout>
             <TableView>
             <TableView.Root>
                 <TableRoot>
@@ -31,5 +35,6 @@
             </TableView.Root>
         </TableView>
         <Button Text="Сохранить" Clicked="SaveSettings"/>
+        <Button Text="Загрузить данные из 1с" Clicked="DownloadFromFTP"/>
     </StackLayout>
 </ContentPage>

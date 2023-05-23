@@ -1,9 +1,13 @@
-﻿using Orders.Droid;
+﻿using Android.OS;
+using Android.Systems;
+using Orders.Droid;
 using System;
 using System.IO;
 using System.Linq.Expressions;
 using System.Net;
 using System.Runtime.CompilerServices;
+using Xamarin.Forms.PlatformConfiguration;
+using System.Threading.Tasks;
 
 [assembly: Xamarin.Forms.Dependency(typeof(FTP))]
 namespace Orders.Droid
@@ -41,17 +45,22 @@ namespace Orders.Droid
             }
         }
 
-        public string Download(string FtpUrl, string PathTo, string UserName, string Password)
-        {
+        public async Task<string> Download(string FtpUrl, string PathTo, string UserName, string Password)
+        { 
             try
             {
+                await Task.Yield();
                 FtpWebRequest req = (FtpWebRequest)WebRequest.Create(FtpUrl);
                 req.Method = WebRequestMethods.Ftp.DownloadFile;
                 req.Credentials = new NetworkCredential(UserName, Password);
+                req.UsePassive = true;
+                req.UseBinary = true;
+                int Timeout = 6000;
+                req.Timeout = Timeout;
                 FtpWebResponse resp= (FtpWebResponse)req.GetResponse();
                 Stream respStream = resp.GetResponseStream();
                 FileStream file = File.Create(PathTo);
-                byte[] data = new byte[512 * 1024];
+                byte[] data = new byte[64];
                 int read;
                 while((read = respStream.Read(data,0,data.Length)) > 0)
                 {

@@ -6,6 +6,10 @@
     <ContentPage.Content>
         <StackLayout>
             <Label Text="Аппаратура" HorizontalOptions="Center"/>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Код: "/>
+                <Label Text="{Binding Code}"/>
+            </StackLayout>
             <Entry Placeholder="Наименование" Text="{Binding Name}"/>
             <Entry Placeholder="Серийный номер" Text="{Binding SerialKey}"/>
             <StackLayout Orientation="Horizontal">

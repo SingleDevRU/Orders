@@ -48,6 +48,13 @@ namespace Orders
             return kitElement;
         }
 
+        public int GetLastKitElementID()
+        {
+            var laststr = ordersdatabase.Query<Technique>("SELECT Id FROM KitElements WHERE Id = (SELECT MAX(Id) FROM KitElements)");
+
+            return laststr.Count == 0 ? 0 : laststr[0].Id;
+        }
+
         public IEnumerable<Malfunction> GetMalfunctions()
         {
             return ordersdatabase.Table<Malfunction>().ToList();
@@ -77,6 +84,13 @@ namespace Orders
             }
         }
 
+        public int GetLastMalfunctionID()
+        {
+            var laststr = ordersdatabase.Query<Technique>("SELECT Id FROM Malfunctions WHERE Id = (SELECT MAX(Id) FROM Malfunctions)");
+
+            return laststr.Count == 0 ? 0 : laststr[0].Id;
+        }
+
         public IEnumerable<Technique> GetTechniques()
         {
             return ordersdatabase.Table<Technique>().ToList();
@@ -104,11 +118,33 @@ namespace Orders
             }
         }
 
+        public Technique GetTechniqueByCode(string Code)
+        {
+            var RequestResult = ordersdatabase.Query<Technique>("SELECT * FROM Techniques WHERE Code = " + $"'{Code}'");
+            Technique technique = RequestResult.Count() > 0 ? RequestResult[0] : null;
+            return technique;
+        }
+        public Technique GetTechniqueByParams(string Name, string SerialKey, string Parent)
+        {
+            var RequestResult = ordersdatabase.Query<Technique>("SELECT * FROM Techniques WHERE Name = " + $"'{Name}'"
+                                                                                       + "AND SerialKey = " + $"'{SerialKey}'"
+                                                                                       + "AND Parent = " + $"'{Parent}'");
+            Technique technique = RequestResult.Count() > 0 ? RequestResult[0] : null;
+            return technique;
+        }
+
         public IEnumerable<Technique> GetTechniqueByParent(string parent)
         {
             string request = "SELECT * FROM Techniques WHERE Parent = " + $"'{parent}'";
             var Technuques = ordersdatabase.Query<Technique>(request).ToList();
             return Technuques;
+        }
+        public int GetLastTechniqueID()
+        {
+            var laststr = ordersdatabase.Query<Technique>("SELECT Id FROM Techniques WHERE Id = (SELECT MAX(Id) FROM Techniques)");
+
+            return laststr.Count == 0 ? 0 : laststr[0].Id;
+
         }
 
         public IEnumerable<Client> GetClients()
@@ -140,11 +176,25 @@ namespace Orders
             return client;
         }
 
+        public Client GetClientByCode(string Code)
+        {
+            var RequestResult = ordersdatabase.Query<Client>("SELECT * FROM Clients WHERE Code = " + $"'{Code}'");
+            Client client = RequestResult.Count() > 0 ? RequestResult[0] : null;
+            return client;
+        }
+
         public Client GetClientByName(string Name)
         {
             var RequestResult = ordersdatabase.Query<Client>("SELECT * FROM Clients WHERE Name = " + $"'{Name}'");
             Client client = RequestResult.Count() > 0 ? RequestResult[0] : null;
             return client;
+        }
+        public int GetLastClientID()
+        {
+            var laststr = ordersdatabase.Query<Client>("SELECT Id FROM Clients WHERE Id = (SELECT MAX(Id) FROM Clients)");
+
+            return laststr.Count == 0 ? 0 : laststr[0].Id;
+
         }
         public IEnumerable<Order> GetOrders()
         {

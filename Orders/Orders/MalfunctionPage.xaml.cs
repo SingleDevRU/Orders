@@ -28,7 +28,10 @@ namespace Orders
 			}
             App.OrdersDataBase.SaveMalfunction(malfunction);
 
-			AddMalfunctionInMalfunctionsLists(malfunction);
+			if (Application.Current.MainPage.Navigation.ModalStack.Count > 1 && Application.Current.MainPage.Navigation.ModalStack[1] is OrderTableRowPage)
+			{
+				AddMalfunctionInMalfunctionsLists(malfunction);
+			}
 
 			await Navigation.PopModalAsync();
 		}

@@ -59,8 +59,9 @@ namespace Orders
         {
             if ((ClientList.SelectedItem != null) && (!string.IsNullOrEmpty(ClientList.SelectedItem.ToString())))
             {
-                string inn = ClientList.SelectedItem.ToString().Split(new string[] { ";;" }, StringSplitOptions.RemoveEmptyEntries)[1];
-                Client curentClient = App.OrdersDataBase.GetClientByINN(inn);
+                string Code = ClientList.SelectedItem.ToString().Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries)[0];
+                Client curentClient = App.OrdersDataBase.GetClientByCode(Code);
+                ClientInn.Text = curentClient.Inn;
                 ClientEmail.Text = curentClient.Email;
                 Phone.Text = curentClient.PhoneNumber;
             }
@@ -71,14 +72,15 @@ namespace Orders
             var clients = App.OrdersDataBase.GetClients();
             foreach (var client in clients)
             {
-                ClientList.Items.Add(client.Name + ";;" + client.Inn);
+                ClientList.Items.Add(client.Code + ": " + client.Name);
             }
         }
 
         private void SelectedClient(object sender, EventArgs e)
         {
-            string inn = ClientList.SelectedItem.ToString().Split(new string[] { ";;" }, StringSplitOptions.RemoveEmptyEntries)[1];
-            Client curentClient = App.OrdersDataBase.GetClientByINN(inn);
+            string Code = ClientList.SelectedItem.ToString().Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries)[0];
+            Client curentClient = App.OrdersDataBase.GetClientByCode(Code);
+            ClientInn.Text = curentClient.Inn;
             ClientEmail.Text = curentClient.Email;
             Phone.Text = curentClient.PhoneNumber;
 
@@ -95,8 +97,8 @@ namespace Orders
         {
             if ((ClientList.SelectedItem != null) && (!string.IsNullOrEmpty((string)ClientList.SelectedItem)))
             {
-                string inn = ClientList.SelectedItem.ToString().Split(new string[] { ";;" }, StringSplitOptions.RemoveEmptyEntries)[1];
-                Client currentClient = App.OrdersDataBase.GetClientByINN(inn);
+                string Code = ClientList.SelectedItem.ToString().Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries)[0];
+                Client currentClient = App.OrdersDataBase.GetClientByCode(Code);
                 ClientPage page = new ClientPage
                 {
                     BindingContext = currentClient
@@ -107,7 +109,14 @@ namespace Orders
 
         private void AddClient(object sender, EventArgs e)
         {
-            Client newclient = new Client();
+            Client newclient = new Client
+            {
+                Code = CodeGenerator.GetUIDForClient(),
+                Name = "",
+                Inn = "",
+                Email = "",
+                PhoneNumber = ""
+            };
             ClientPage page = new ClientPage
             {
                 BindingContext = newclient
@@ -156,16 +165,6 @@ namespace Orders
 
         private async void Cancel(object sender, EventArgs e) 
         {
-            //bool answer = await DisplayAlert("Внимание!", "Данные могли быть изменены.Сохранить изменения?", "да", "нет");
-
-            //if (answer)
-            //{
-            //    Preservation();
-            //}
-            //else
-            //{
-            //    DeleteNotSavedRow();
-            //}
             DeleteNotSavedRow();
             await Navigation.PopModalAsync();
         }

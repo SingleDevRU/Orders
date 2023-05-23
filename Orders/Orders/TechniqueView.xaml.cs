@@ -44,6 +44,7 @@ namespace Orders
 		{
 			Technique technique = new Technique
 			{
+				Code = CodeGenerator.GetUIDForTechnique(),
 				Name = "",
 				Parent = "",
 				SerialKey = ""

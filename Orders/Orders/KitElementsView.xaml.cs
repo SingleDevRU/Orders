@@ -45,6 +45,7 @@ namespace Orders
 		{
 			KitElement kitElement = new KitElement
 			{
+				Code = CodeGenerator.GetCodeForKitElement(),
 				Name = ""
 			};
 

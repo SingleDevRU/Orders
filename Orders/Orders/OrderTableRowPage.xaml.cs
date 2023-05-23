@@ -30,8 +30,8 @@ namespace Orders
             var ParentTechniques = App.OrdersDataBase.GetTechniqueByParent(client);
             foreach (var technique in ParentTechniques)
             {
-                string addSerial = technique.SerialKey.Length > 0 ? ";;" + technique.SerialKey : "";
-                string TechniqueName = technique.Name + addSerial;
+                string AddSerial = technique.SerialKey.Length > 0 ? ": " + technique.SerialKey : "";
+                string TechniqueName = technique.Code + ": " + technique.Name + AddSerial;
                 Techniques.Items.Add(TechniqueName);
             }
         }
@@ -56,7 +56,11 @@ namespace Orders
 
         private void AddKitElement(object sender, EventArgs e)
         {
-            KitElement kitElement = new KitElement();
+            KitElement kitElement = new KitElement
+            {
+                Code = CodeGenerator.GetCodeForKitElement(),
+                Name = ""
+            };
             KitElementPage page = new KitElementPage
             {
                 BindingContext = kitElement
@@ -76,9 +80,16 @@ namespace Orders
 
         private void AddMalfunctions(object sender, EventArgs e)
         {
-            Malfunction malfunction = new Malfunction();
-            MalfunctionPage page = new MalfunctionPage();
-            page.BindingContext = malfunction;
+            Malfunction malfunction = new Malfunction
+            {
+                Code = CodeGenerator.GetCodeForMalfunction(),
+                Name = ""
+            };
+
+            MalfunctionPage page = new MalfunctionPage
+            {
+                BindingContext = malfunction
+            };
             Navigation.PushModalAsync(page);
 
         }
@@ -101,6 +112,7 @@ namespace Orders
 
             Technique technique = new Technique
             {
+                Code = CodeGenerator.GetUIDForTechnique(),
                 Name = "",
                 SerialKey = "",
                 Parent = client

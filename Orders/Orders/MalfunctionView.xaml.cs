@@ -46,6 +46,7 @@ namespace Orders
 		{
 			Malfunction malfunction = new Malfunction
 			{
+				Code = CodeGenerator.GetCodeForMalfunction(),
 				Name = ""
 			};
 

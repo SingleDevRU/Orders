@@ -6,6 +6,10 @@
     <ContentPage.Content>
         <StackLayout>
             <Label Text="Элемент комплекта" HorizontalOptions="Center"/>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Код: "/>
+                <Label Text="{Binding Code}"/>
+            </StackLayout>
             <Entry x:Name="Name" Placeholder="Наименование" Text="{Binding Name}"/>
             <Button Text="Сохранить" Clicked="SaveKitElement"/>
             <Button Text="Удалить" Clicked="DeleteKitElement"/>

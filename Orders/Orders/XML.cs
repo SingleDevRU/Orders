@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using Xamarin.Essentials;
 using System.Xml.Linq;
+using System.Threading.Tasks;
 
 namespace Orders
 {
@@ -41,11 +42,10 @@ namespace Orders
                     XmlText OrdNumberText = xmlDoc.CreateTextNode(ord.Number.ToString());
                     XmlText ExecutorName = xmlDoc.CreateTextNode(ord.Executor);
 
-                    string[] ClientInfo = ord.Client.Split(new string[] {";;"},StringSplitOptions.RemoveEmptyEntries);
-                    XmlText ClientName = xmlDoc.CreateTextNode(ClientInfo[0]);
-                    XmlText Inn = xmlDoc.CreateTextNode(ClientInfo[1]);
-
-                    Client client = App.OrdersDataBase.GetClientByINN(ClientInfo[1]);
+                    string[] ClientInfo = ord.Client.Split(new string[] {": "},StringSplitOptions.RemoveEmptyEntries);
+                    Client client = App.OrdersDataBase.GetClientByCode(ClientInfo[0]);
+                    XmlText ClientName = xmlDoc.CreateTextNode(ClientInfo[1]);
+                    XmlText Inn = xmlDoc.CreateTextNode(client.Inn);                    
                     XmlText Email = xmlDoc.CreateTextNode(client.Email);
                     XmlText Phone = xmlDoc.CreateTextNode(client.PhoneNumber);
 
@@ -63,11 +63,12 @@ namespace Orders
                     OrderID.AppendChild(Id);
                     OrdNumber.AppendChild(OrdNumberText);
                     OrderDate.AppendChild(Date);
+       
                     ClientInn.AppendChild(Inn);
                     ClientEmail.AppendChild(Email);
                     ClientPhone.AppendChild(Phone);
                     Executor.AppendChild(ExecutorName);
-
+               
                     OrderClient.Attributes.Append(ClientInn);
                     OrderClient.Attributes.Append(ClientEmail);
                     OrderClient.Attributes.Append(ClientPhone);
@@ -97,19 +98,26 @@ namespace Orders
                             XmlNode Equipment = xmlDoc.CreateElement("Комплектация");
 
                             XmlAttribute serialKey = xmlDoc.CreateAttribute("СерийныйНомер");
+                            XmlAttribute TechniqueCode = xmlDoc.CreateAttribute("Код");
 
                             XmlText TextNum = xmlDoc.CreateTextNode(row.Number.ToString());
                             XmlText MalfunctionName = xmlDoc.CreateTextNode(row.Malfunction);
                             XmlText KitElements = xmlDoc.CreateTextNode(row.Equipment);
 
-                            string[] TechniqueInfo = row.Technic.Split(new string[] {";;"},StringSplitOptions.RemoveEmptyEntries);
-                            XmlText TechniqueName = xmlDoc.CreateTextNode(TechniqueInfo[0]);
-                            XmlText SerialKeyText = xmlDoc.CreateTextNode(TechniqueInfo.Length == 2 ? TechniqueInfo[1] : "");
+                            string[] TechniqueInfo = row.Technic.Split(new string[] {": "},StringSplitOptions.RemoveEmptyEntries);
+                            XmlText TechniqueCodeText = xmlDoc.CreateTextNode(TechniqueInfo[0]);
+                            XmlText TechniqueName = xmlDoc.CreateTextNode(TechniqueInfo[1]);
+                            XmlText SerialKeyText = xmlDoc.CreateTextNode(TechniqueInfo.Length == 3 ? TechniqueInfo[2] : "");                            
 
                             Number.AppendChild(TextNum);
                             serialKey.AppendChild(SerialKeyText);
+                            TechniqueCode.AppendChild(TechniqueCodeText);
+                           
                             Technique.Attributes.Append(serialKey);
+                            Technique.Attributes.Append(TechniqueCode);
+
                             Technique.AppendChild(TechniqueName);
+
                             Malfunction.AppendChild(MalfunctionName);
                             Equipment.AppendChild(KitElements);
 
@@ -135,68 +143,85 @@ namespace Orders
                 xmlDoc.Save(Path.Combine(folderPath, fileName));
             }
         }
-
-        public static void ReadXml(string PathToFile)
+        /// <summary>
+        /// Инициализация XML документа и начало загрузки данных в бд
+        /// </summary>
+        /// <param name="PathToFile">Путь к файлу XML, полученного из 1с</param>
+        /// <returns>Результат загрузки данных</returns>
+        public static async Task<string> ReadXml(string PathToFile)
         {
-            XmlDocument doc = new XmlDocument();
-            doc.Load(PathToFile);
+            try
+            {
+                await Task.Yield();
+                XmlDocument doc = new XmlDocument();
+                doc.Load(PathToFile);
+                LoadFromXML(doc);
+                return "Прогрузка данных завершена";
+            }
+            catch(Exception ex)
+            { 
+                return ex.ToString();
+            }
+        }
 
+        /// <summary>
+        /// Прогрузка данных в бд из файла, полученного из 1с
+        /// </summary>
+        /// <param name="doc">XML файл, полученного из 1с</param>
+        private static void LoadFromXML(XmlDocument doc)
+        {
             XmlElement root = doc.DocumentElement;
 
-            if (root == null) return;
-
-            foreach(XmlElement node in root)
+            foreach (XmlElement node in root)
             {
-                Console.WriteLine(node.Name);
-                if(node.Name == "Контрагенты")
+                if (node.Name == "Контрагенты")
                 {
                     foreach (XmlNode node2 in node.ChildNodes)
                     {
-                        if (App.OrdersDataBase.GetClientByINN(node2.Attributes.GetNamedItem("ИНН").Value) == null)
+
+                        Dictionary<string,string> DataClient = new Dictionary<string,string>
                         {
-                            string[] DataClient = { node2.Attributes.GetNamedItem("Наименование").Value,
-                                                    node2.Attributes.GetNamedItem("ИНН").Value
-                                                  };
-                            PostCreator.CreateClient(DataClient);
-                        }
+                            {"Наименование", node2.Attributes.GetNamedItem("Наименование").Value },
+                            {"ИНН", node2.Attributes.GetNamedItem("ИНН").Value },
+                            {"Email", node2.Attributes.GetNamedItem("email").Value },
+                            {"Телефон",node2.Attributes.GetNamedItem("Телефон").Value }
+                        };
+                        PostCreator.CreateClient(DataClient);
                     }
                 }
-                else if(node.Name == "Аппаратуры")
+                else if (node.Name == "Аппаратуры")
                 {
                     foreach (XmlNode node2 in node.ChildNodes)
                     {
-                        string[] DataTechnique= { node2.Attributes.GetNamedItem("Наименование").Value,
-                                                node2.Attributes.GetNamedItem("Владелец").Value,
-                                                node2.Attributes.GetNamedItem("Серийный").Value
-                                              };
+                        string[] DataTechnique = {
+                                                   node2.Attributes.GetNamedItem("Код").Value,
+                                                   node2.Attributes.GetNamedItem("Наименование").Value,
+                                                   node2.Attributes.GetNamedItem("Владелец").Value,
+                                                   node2.Attributes.GetNamedItem("Серийный").Value
+                                                 };
                         PostCreator.CreateTechnique(DataTechnique);
-                        Console.WriteLine(node2.Attributes.GetNamedItem("Наименование").Value + ":" + node2.Attributes.GetNamedItem("Владелец").Value + ";"
-                                          + node2.Attributes.GetNamedItem("Серийный").Value);
                     }
                 }
                 else if (node.Name == "Неисправности")
                 {
                     foreach (XmlNode node2 in node.ChildNodes)
                     {
-                        if(App.OrdersDataBase.GetMalfunctionByName(node2.Attributes.GetNamedItem("Наименование").Value) == null)
+                        if (App.OrdersDataBase.GetMalfunctionByName(node2.Attributes.GetNamedItem("Наименование").Value) == null)
                         {
                             PostCreator.CreateMalfunction(node2.Attributes.GetNamedItem("Наименование").Value);
                         }
-                        Console.WriteLine(node2.Attributes.GetNamedItem("Наименование").Value);
                     }
                 }
                 else if (node.Name == "Комплектация")
                 {
                     foreach (XmlNode node2 in node.ChildNodes)
                     {
-                        if(App.OrdersDataBase.GetKitElementByName(node2.Attributes.GetNamedItem("Наименование").Value) == null)
+                        if (App.OrdersDataBase.GetKitElementByName(node2.Attributes.GetNamedItem("Наименование").Value) == null)
                         {
                             PostCreator.CreateKitElement(node2.Attributes.GetNamedItem("Наименование").Value);
                         }
-                        Console.WriteLine(node2.Attributes.GetNamedItem("Наименование").Value);
                     }
                 }
-
             }
         }
     }

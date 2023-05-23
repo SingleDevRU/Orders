@@ -6,6 +6,10 @@
     <ContentPage.Content>
         <StackLayout>
             <Label Text="Неисправность" HorizontalOptions="Center"/>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Код: "/>
+                <Label Text="{Binding Code}"/>
+            </StackLayout>
             <Entry x:Name="MalfunctionName" Text="{Binding Name}" Placeholder="Описание неисправности"/>
             <Button Text="Сохранить" Clicked="SaveMalfunction"/>
             <Button Text="Удалить" Clicked="DeleteMalfunction"/>

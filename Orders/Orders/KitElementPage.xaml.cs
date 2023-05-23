@@ -26,8 +26,11 @@ namespace Orders
                 return;
             }
 			App.OrdersDataBase.SaveKitElement(kitElement);
-            
-            AddKitElementInKitElementsLists(kitElement);
+
+            if (Application.Current.MainPage.Navigation.ModalStack.Count > 1 && Application.Current.MainPage.Navigation.ModalStack[1] is OrderTableRowPage)
+            {
+                AddKitElementInKitElementsLists(kitElement);
+            }
 
 			await Navigation.PopModalAsync();
         }

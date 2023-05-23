@@ -27,18 +27,10 @@
                             </ViewCell.View>
                         </ViewCell>
                     </DataTemplate>
-                </ListView.ItemTemplate> 
-            </ListView>
-            <ListView x:Name="FileList">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <TextCell Text="{Binding}"/>
-                    </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
             <Button Text="Создать квитанцию" Clicked="CreateOrder"/>
             <Button Text="Выгрузить" Clicked="SaveXML"/>
-            <Button Text="Загрузить" Clicked="DownloadFromFTP"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
