@@ -80,7 +80,7 @@ namespace Orders
         {
             string Code = ClientList.SelectedItem.ToString().Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries)[0];
             Client curentClient = App.OrdersDataBase.GetClientByCode(Code);
-            ClientInn.Text = curentClient.Inn;
+            Inn.Text = curentClient.Inn;
             ClientEmail.Text = curentClient.Email;
             Phone.Text = curentClient.PhoneNumber;
 

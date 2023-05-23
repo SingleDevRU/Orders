@@ -55,12 +55,39 @@ namespace Orders
                 return;
             }
 
-            XML.CreateXML(folderPath, $"OrdersTo1C_{settings.Prefix}.xml");
-
-            await DisplayAlert("Результат выгрузки", DependencyService.Get<IFtpWebRequest>().Upload(settings.FTPAdress, Path.Combine(folderPath, $"OrdersTo1C_{Preferences.Get("Prefix","No_prefix")}.xml"), settings.FTPUser, settings.FTPPassword),"ОК");
-
+            UploadStatus.IsVisible = true;
+            if(!await CreateXmlForUpload(settings.Prefix)) return;
+            if(!await UploadToFTP(settings.FTPAdress, settings.FTPUser, settings.FTPPassword, settings.Prefix)) return;
+            UploadStatus.IsVisible = false;
+            UploadProgress.Progress = 0;
+            await DisplayAlert("Готово!", "Выгрузка завершена!", "ОК");
         }
-
+        private async Task<bool> CreateXmlForUpload(string prefix)
+        {
+            string CreatingStatus = await XML.StartUploadXML(folderPath, $"OrdersTo1C_{prefix}.xml");
+            if( CreatingStatus != "Файл создан")
+            {
+                await DisplayAlert("Ошибка создания файла!", CreatingStatus, "ОК");
+                UploadStatus.IsVisible = false;
+                UploadProgress.Progress = 0;
+                return false;
+            }
+            await UploadProgress.ProgressTo(0.2, 500, Easing.Linear);
+            return true;
+        }
+        private async Task<bool> UploadToFTP(string FTPAdress, string FTPUser, string FTPPassword, string prefix)
+        {
+            string FTPStatus = await DependencyService.Get<IFtpWebRequest>().Upload(FTPAdress, Path.Combine(folderPath, $"OrdersTo1C_{prefix}.xml"), FTPUser, FTPPassword);
+            if(FTPStatus != "Выгрузка завершена")
+            {
+                await DisplayAlert("Ошибка FTP соединения!", FTPStatus, "ОК");
+                UploadStatus.IsVisible = false;
+                UploadProgress.Progress = 0;
+                return false;
+            }
+            await UploadProgress.ProgressTo(1, 500, Easing.Linear);
+            return true;
+        }
         private async void CreateOrder(object sender, EventArgs e)
         {
             Order order = new Order

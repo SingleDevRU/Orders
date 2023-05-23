@@ -107,7 +107,6 @@ namespace Orders
                 if (!isChanged) return;
             }
             App.OrdersDataBase.SaveTechnique(technique);
-
         }
         
         public static void CreateMalfunction(string name)

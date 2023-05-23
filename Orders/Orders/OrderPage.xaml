@@ -39,7 +39,7 @@
             </StackLayout>
             <StackLayout Orientation="Horizontal">
                 <Label Text="ИНН: "/>
-                <Label x:Name="ClientInn" Text="{Binding ClientInn}"/>
+                <Label x:Name="Inn" Text="{Binding ClientInn}"/>
             </StackLayout>
             <StackLayout Orientation="Horizontal">
                 <Label Text="Email: "/>
