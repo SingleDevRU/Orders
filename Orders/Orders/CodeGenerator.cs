@@ -30,5 +30,9 @@ namespace Orders
             int LastId = App.OrdersDataBase.GetLastKitElementID();
             return "К-" + LastId.ToString();
         }
+        public static string GetCodeForOrder(Order order)
+        {
+            return $"{order.Id}{Preferences.Get("Prefix", "No_Prefix")}";
+        }
     }
 }

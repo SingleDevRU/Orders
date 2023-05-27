@@ -90,11 +90,13 @@ namespace Orders
         {
             Order order = new Order
             {
+                Code = "",
                 Number = App.OrdersDataBase.GetLast() + 1,
                 Date = DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"),
                 SendMail = false,
                 Executor = "",
-                Client = ""
+                Client = "",
+                Comment = ""
             };
 
             OrderPage orderPage = new OrderPage

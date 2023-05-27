@@ -9,6 +9,7 @@ using Xamarin.Forms.Xaml;
 using System.IO;
 using System.ComponentModel;
 using Xamarin.Essentials;
+using System.Xml.Linq;
 
 namespace Orders
 {
@@ -61,7 +62,7 @@ namespace Orders
             {
                 string Code = ClientList.SelectedItem.ToString().Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries)[0];
                 Client curentClient = App.OrdersDataBase.GetClientByCode(Code);
-                ClientInn.Text = curentClient.Inn;
+                Inn.Text = curentClient.Inn;
                 ClientEmail.Text = curentClient.Email;
                 Phone.Text = curentClient.PhoneNumber;
             }
@@ -115,7 +116,7 @@ namespace Orders
                 Name = "",
                 Inn = "",
                 Email = "",
-                PhoneNumber = ""
+                PhoneNumber = "",
             };
             ClientPage page = new ClientPage
             {
@@ -143,6 +144,7 @@ namespace Orders
             order.Executor = Executor.Text;
             order.Client = (string)ClientList.SelectedItem;
             order.isLoaded = false;
+            order.Comment = Comment.Text ?? "";
             if (string.IsNullOrEmpty(order.Client) || order.Executor == "<Не установлен>")
             {
                 await DisplayAlert("Документ не сохранён!", "Не выбран клиент или не установлен пользователь!", "ОК");
@@ -160,16 +162,18 @@ namespace Orders
                 }
             }
             App.OrdersDataBase.SaveOrder(order);
+            if(string.IsNullOrEmpty(order.Code))
+            {
+                order.Code = CodeGenerator.GetCodeForOrder(order);
+                App.OrdersDataBase.UpdateOrder(order);
+            }
             
         }
-
         private async void Cancel(object sender, EventArgs e) 
         {
             DeleteNotSavedRow();
             await Navigation.PopModalAsync();
         }
-
-
         private void DeleteNotSavedRow()
         {
             var OrderRows = App.OrdersDataBase.GetRows(int.Parse(OrderNumber.Text));
@@ -181,7 +185,6 @@ namespace Orders
                 }
             }
         }
-
         private async void AddRow(object sender, EventArgs e)
         {
             OrderTableRow row = new OrderTableRow
@@ -200,9 +203,7 @@ namespace Orders
             };
  
             await Navigation.PushModalAsync(page);
-
         }
-
         private async void OnSelected(object sender, SelectedItemChangedEventArgs e)
         {
             OrderTableRow SelectedRow = (OrderTableRow)e.SelectedItem;

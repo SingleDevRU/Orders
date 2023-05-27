@@ -204,6 +204,13 @@ namespace Orders
             return ordersdatabase.Get<Order>(id);
         }
 
+        public Order GetOrderByCode(string Code)
+        {
+            var RequestResult = ordersdatabase.Query<Order>("SELECT * FROM Orders WHERE Code = " + $"'{Code}'");
+            Order order = RequestResult.Count() > 0 ? RequestResult[0] : null;
+            return order;
+        }
+
         public int DeleteOrder(int id, int Number) 
         {
             ordersdatabase.Execute($"DELETE FROM OrderTableRows WHERE ParentNumber = {Number}");
@@ -220,6 +227,13 @@ namespace Orders
             else
             {
                 return ordersdatabase.Insert(order);
+            }
+        }
+        public void UpdateOrder(Order order)
+        {
+            if(order.Id != 0)
+            { 
+                ordersdatabase.Update(order); 
             }
         }
 

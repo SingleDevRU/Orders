@@ -38,6 +38,7 @@ namespace Orders
 
             foreach (var ord in orderlist)
             {
+                if (ord.isLoaded) continue;
                 XmlNode order = xmlDoc.CreateElement("Квитанция");
                 XmlNode OrderID = xmlDoc.CreateElement("ИД");
                 XmlNode OrdNumber = xmlDoc.CreateElement("Номер");
@@ -45,15 +46,17 @@ namespace Orders
                 XmlNode Executor = xmlDoc.CreateElement("Исполнитель");
                 XmlNode OrderClient = xmlDoc.CreateElement("Клиент");
                 XmlNode SendEmail = xmlDoc.CreateElement("ОтправитьEmail");
+                XmlNode Comment = xmlDoc.CreateElement("Комментарий");
 
                 XmlAttribute ClientInn = xmlDoc.CreateAttribute("ИНН");
                 XmlAttribute ClientEmail = xmlDoc.CreateAttribute("email");
                 XmlAttribute ClientPhone = xmlDoc.CreateAttribute("Телефон");
 
-                XmlText Id = xmlDoc.CreateTextNode($"{ord.Id}{Preferences.Get("Prefix", "No_Prefix")}");
+                XmlText Id = xmlDoc.CreateTextNode(ord.Code);
                 XmlText Date = xmlDoc.CreateTextNode(ord.Date);
                 XmlText OrdNumberText = xmlDoc.CreateTextNode(ord.Number.ToString());
                 XmlText ExecutorName = xmlDoc.CreateTextNode(ord.Executor);
+                XmlText CommentText = xmlDoc.CreateTextNode(ord.Comment);
 
                 string[] ClientInfo = ord.Client.Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
                 Client client = App.OrdersDataBase.GetClientByCode(ClientInfo[0]);
@@ -85,9 +88,10 @@ namespace Orders
                 OrderClient.Attributes.Append(ClientEmail);
                 OrderClient.Attributes.Append(ClientPhone);
                 OrderClient.AppendChild(ClientName);
-                    OrderClient.AppendChild(ClientName);
 
                 SendEmail.AppendChild(SendMail);
+
+                Comment.AppendChild(CommentText);
 
                 order.AppendChild(OrderID);
                 order.AppendChild(OrdNumber);
@@ -95,6 +99,7 @@ namespace Orders
                 order.AppendChild(Executor);
                 order.AppendChild(OrderClient);
                 order.AppendChild(SendEmail);
+                order.AppendChild(Comment);
 
                 var TableRows = App.ordersdatabase.GetRows(ord.Number);
 
@@ -131,7 +136,6 @@ namespace Orders
 
                         Malfunction.AppendChild(MalfunctionName);
                         Equipment.AppendChild(KitElements);
-                            Equipment.AppendChild(KitElements);
 
                         TableString.AppendChild(Number);
                         TableString.AppendChild(Technique);
@@ -225,8 +229,14 @@ namespace Orders
                     foreach (XmlNode node2 in node.ChildNodes)
                     {                      
                         PostCreator.CreateKitElement(node2.Attributes.GetNamedItem("Наименование").Value);                        
+                    }                        
+                }
+                else if(node.Name == "ЗагруженныеДокументы")
+                {
+                    foreach(XmlNode node2 in node.ChildNodes)
+                    {
+                        PostCreator.OrderisLoadChange(node2.Attributes.GetNamedItem("ИД").Value);
                     }
-                        
                 }
             }
         }

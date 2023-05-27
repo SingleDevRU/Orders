@@ -129,5 +129,12 @@ namespace Orders
             };
             App.OrdersDataBase.SaveKitElement(kitElement);
         }
+        public static void OrderisLoadChange(string Code)
+        {
+            Order order = App.OrdersDataBase.GetOrderByCode(Code);            
+            if (order == null) return;
+            order.isLoaded = true;
+            App.OrdersDataBase.UpdateOrder(order);
+        }
     }
 }
