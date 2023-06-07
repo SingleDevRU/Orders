@@ -86,6 +86,14 @@ namespace Orders
             await ProgressLoad.ProgressTo(1, 500, Easing.Linear);
             return true;
         }
+
+        private async void VacuumDB(object sender, EventArgs e)
+        {
+            bool answer = await DisplayAlert("Внимание! Вопрос!", "Свернуть базу данных?", "ДА", "НЕТ");
+            if (!answer) return;
+            App.OrdersDataBase.VacuumDB();
+            await DisplayAlert("Готово!", "Свертка базы данных завершена.", "ОК");
+        }
     }
 
 }

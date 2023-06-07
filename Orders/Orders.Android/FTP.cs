@@ -23,7 +23,7 @@ namespace Orders.Droid
                 await Task.Yield();
                 string PureName = new FileInfo(FileName).Name;
                 string UploadURL = $"{FtpUrl}{UploadDirectory}/{PureName}";
-                FtpWebRequest req = (FtpWebRequest)FtpWebRequest.Create(UploadURL);
+                FtpWebRequest req = (FtpWebRequest)WebRequest.Create(UploadURL);
                 req.Proxy = null;
                 int Timeout = 6000;
                 req.Timeout = Timeout;

@@ -32,8 +32,10 @@ namespace Orders
         private async void OnSelected(object sender, SelectedItemChangedEventArgs e) 
         {
             Order SelectedOrder = (Order)e.SelectedItem;
-            OrderPage orderPage = new OrderPage();
-            orderPage.BindingContext= SelectedOrder;
+            OrderPage orderPage = new OrderPage
+            {
+                BindingContext = SelectedOrder
+            };
             await Navigation.PushModalAsync(orderPage);
             
         }
@@ -52,7 +54,6 @@ namespace Orders
                 await DisplayAlert("Файл не выгружен!", "Не заполнены настройки!", "ОК");
                 return;
             }
-
             UploadStatus.IsVisible = true;
             if(!await CreateXmlForUpload(settings.Prefix)) return;
             if(!await UploadToFTP(settings.FTPAdress, settings.FTPUser, settings.FTPPassword, settings.Prefix)) return;

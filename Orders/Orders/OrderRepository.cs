@@ -20,6 +20,11 @@ namespace Orders
             ordersdatabase.CreateTable<KitElement>();
         }
 
+        public void VacuumDB()
+        {
+            ordersdatabase.Execute("VACUUM");
+        }
+
         public IEnumerable<KitElement> GetKitElements()
         {
             return ordersdatabase.Table<KitElement>().ToList();
@@ -148,6 +153,11 @@ namespace Orders
         public IEnumerable<Client> GetClients()
         {
             return ordersdatabase.Table<Client>().ToList();
+        }
+
+        public IEnumerable<Client> GetClientsByPartName(string PartName)
+        {
+            return ordersdatabase.Query<Client>("SELECT * FROM Clients WHERE name GLOB " + $"'{"*"+PartName+"*"}'");
         }
 
         public int DeleteClient(int Id)

@@ -36,5 +36,6 @@
         </TableView>
         <Button Text="Сохранить" Clicked="SaveSettings"/>
         <Button Text="Загрузить данные из 1с" Clicked="DownloadFromFTP"/>
+        <Button Text="Свернуть базу данных" Clicked="VacuumDB"/>
     </StackLayout>
 </ContentPage>

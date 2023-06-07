@@ -70,6 +70,7 @@ namespace Orders
 
         private void FillClientList()
         {
+            ClientList.Items.Clear();
             var clients = App.OrdersDataBase.GetClients();
             foreach (var client in clients)
             {
@@ -79,6 +80,7 @@ namespace Orders
 
         private void SelectedClient(object sender, EventArgs e)
         {
+            if (ClientList.SelectedItem == null) return;
             string Code = ClientList.SelectedItem.ToString().Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries)[0];
             Client curentClient = App.OrdersDataBase.GetClientByCode(Code);
             Inn.Text = curentClient.Inn;
@@ -212,6 +214,39 @@ namespace Orders
                 BindingContext = SelectedRow
             };
             await Navigation.PushModalAsync(page);
+        }
+
+        private void EnableSearch(object sender, CheckedChangedEventArgs e)
+        {
+            if(NameForSearch.IsVisible)
+            { 
+                NameForSearch.IsVisible = false; 
+                NameForSearch.Text = string.Empty;
+                FillClientList();
+            }
+            else 
+            { 
+                NameForSearch.IsVisible = true; 
+            }
+        }
+
+        private void StartSearch(object sender, FocusEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(((Entry)sender).Text))
+            {
+                ClientList.Items.Clear();
+                ClientList.SelectedItem = null;
+                FillClientListForSearch(((Entry)sender).Text);
+            }
+        }
+
+        private void FillClientListForSearch(string PartName)
+        {            
+            var clients = App.OrdersDataBase.GetClientsByPartName(PartName);
+            foreach (var client in clients)
+            {
+                ClientList.Items.Add(client.Code + ": " + client.Name);
+            }
         }
     }
 }
