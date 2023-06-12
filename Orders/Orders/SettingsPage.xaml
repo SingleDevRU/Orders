@@ -35,7 +35,7 @@
             </TableView.Root>
         </TableView>
         <Button Text="Сохранить" Clicked="SaveSettings"/>
-        <Button Text="Загрузить данные из 1с" Clicked="DownloadFromFTP"/>
-        <Button Text="Свернуть базу данных" Clicked="VacuumDB"/>
+        <Button Text="Синхронизация" Clicked="Synchronization"/>
+        <Button Text="Дефрагментация БД" Clicked="VacuumDB"/>
     </StackLayout>
 </ContentPage>

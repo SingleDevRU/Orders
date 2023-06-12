@@ -34,7 +34,7 @@ namespace Orders
 			await DisplayAlert("Готово!", "Настройки сохранены.", "ОК");
         }
 
-        private async void DownloadFromFTP(object sender, EventArgs e)
+        private async void Synchronization(object sender, EventArgs e)
         {
             Settings settings = new Settings
             { 
@@ -57,7 +57,7 @@ namespace Orders
             if (!await UploadToFTP(settings)) return;
             LoadStatus.IsVisible = false;
             ProgressLoad.Progress = 0;
-            await DisplayAlert("Готово!", "Загрузка завершена.", "ОК");
+            await DisplayAlert("Готово!", "Синхронизация завершена.", "ОК");
         }
 
         private async Task<bool> FTPConection(Settings settings)
@@ -118,10 +118,10 @@ namespace Orders
 
         private async void VacuumDB(object sender, EventArgs e)
         {
-            bool answer = await DisplayAlert("Внимание! Вопрос!", "Свернуть базу данных?", "ДА", "НЕТ");
+            bool answer = await DisplayAlert("Внимание! Вопрос!", "Дефрагментировать базу данных?", "ДА", "НЕТ");
             if (!answer) return;
             App.OrdersDataBase.VacuumDB();
-            await DisplayAlert("Готово!", "Свертка базы данных завершена.", "ОК");
+            await DisplayAlert("Готово!", "Дефрагментация базы данных завершена.", "ОК");
         }
     }
 
