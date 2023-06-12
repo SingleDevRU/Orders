@@ -16,6 +16,7 @@ namespace Orders
 		{
 			InitializeComponent ();
             FillClientsList();
+            FillGroupModelList();
         }
 
         private void FillClientsList()
@@ -24,6 +25,15 @@ namespace Orders
             foreach (var client in clients)
             {
                 Client.Items.Add(client.Code + ": " + client.Name);
+            }
+        }
+
+        private void FillGroupModelList()
+        {
+            var GroupsModel = App.OrdersDataBase.GetModelGroups();
+            foreach (var group in GroupsModel)
+            { 
+                ModelGroup.Items.Add(group.Perfomance);
             }
         }
 
@@ -50,6 +60,8 @@ namespace Orders
         {
             Technique technique = (Technique)BindingContext;
 			technique.Parent = (string)Client.SelectedItem;
+            technique.GroupModel = (string)ModelGroup.SelectedItem;
+            technique.Model = (string)Model.SelectedItem;
 			
             if(string.IsNullOrEmpty(technique.Name))
 			{
@@ -101,6 +113,17 @@ namespace Orders
 		{
 			Navigation.PopModalAsync();
 		}
+
+        private void ModelGroup_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string CodeModelGroup = ((string)(((Picker)sender).SelectedItem)).Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries)[0];
+            var Models = App.OrdersDataBase.GetModelsByGroup(CodeModelGroup);
+            Model.Items.Clear();
+            foreach( var model in Models) 
+            {
+                Model.Items.Add(model.Perfomance);
+            }
+        }
     }
 }
 

@@ -18,11 +18,59 @@ namespace Orders
             ordersdatabase.CreateTable<Technique>();
             ordersdatabase.CreateTable<Malfunction>();
             ordersdatabase.CreateTable<KitElement>();
+            ordersdatabase.CreateTable<ModelGroup>();
+            ordersdatabase.CreateTable<Model>();
         }
 
         public void VacuumDB()
         {
             ordersdatabase.Execute("VACUUM");
+        }
+
+        public int SaveModel(Model model)
+        { 
+            if (model.Id != 0)
+            {
+                return ordersdatabase.Update(model);
+            }
+            else
+            { 
+                return ordersdatabase.Insert(model); 
+            }
+        }
+        public IEnumerable<Model> GetModelsByGroup(string CodeGroup)
+        {
+            var RequestResult = ordersdatabase.Query<Model>("SELECT * FROM Models WHERE GroupCode = " + $"'{CodeGroup}'");
+            return RequestResult.ToList();
+        }
+        public Model GetModelByCode(string Code)
+        {
+            var RequestResult = ordersdatabase.Query<Model>("SELECT * FROM Models WHERE Code = " + $"'{Code}'");
+            Model model = RequestResult.Count() > 0 ? RequestResult[0] : null;
+            return model;
+        }
+        public int SaveModelGroup(ModelGroup modelGroup)
+        {
+            if (modelGroup.Id != 0)
+            {
+                return ordersdatabase.Update(modelGroup);
+            }
+            else
+            {
+                return ordersdatabase.Insert(modelGroup);
+            }
+        }
+
+        public IEnumerable<ModelGroup> GetModelGroups()
+        {
+            return ordersdatabase.Table<ModelGroup>().ToList();
+        }
+
+        public ModelGroup GetModelGroupByCode(string Code)
+        {
+            var RequestResult = ordersdatabase.Query<ModelGroup>("SELECT * FROM ModelGroups WHERE Code = " + $"'{Code}'");
+            ModelGroup modelGroup = RequestResult.Count() > 0 ? RequestResult[0] : null;
+            return modelGroup;
         }
 
         public IEnumerable<KitElement> GetKitElements()

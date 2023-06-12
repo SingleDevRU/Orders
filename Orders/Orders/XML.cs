@@ -38,7 +38,7 @@ namespace Orders
 
             foreach (var ord in orderlist)
             {
-                if (ord.isLoaded) continue;
+                if (!ord.isChanged && ord.isLoaded) continue;
                 XmlNode order = xmlDoc.CreateElement("Квитанция");
                 XmlNode OrderID = xmlDoc.CreateElement("ИД");
                 XmlNode OrdNumber = xmlDoc.CreateElement("Номер");
@@ -116,21 +116,27 @@ namespace Orders
                         XmlNode Equipment = xmlDoc.CreateElement("Комплектация");
                         XmlAttribute serialKey = xmlDoc.CreateAttribute("СерийныйНомер");
                         XmlAttribute TechniqueCode = xmlDoc.CreateAttribute("Код");
+                        XmlAttribute ModelCode = xmlDoc.CreateAttribute("КодМодели");
 
 
                         XmlText TextNum = xmlDoc.CreateTextNode(row.Number.ToString());
                         XmlText MalfunctionName = xmlDoc.CreateTextNode(row.Malfunction);
                         XmlText KitElements = xmlDoc.CreateTextNode(row.Equipment);
-                        string[] TechniqueInfo = row.Technic.Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
-                        XmlText TechniqueCodeText = xmlDoc.CreateTextNode(TechniqueInfo[0]);
-                        XmlText TechniqueName = xmlDoc.CreateTextNode(TechniqueInfo[1]);
-                        XmlText SerialKeyText = xmlDoc.CreateTextNode(TechniqueInfo.Length == 3 ? TechniqueInfo[2] : "");
+                        string TechniqueCodeValue = row.Technic.Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries)[0];
+                        Technique technique = App.OrdersDataBase.GetTechniqueByCode(TechniqueCodeValue);
+                        XmlText TechniqueCodeText = xmlDoc.CreateTextNode(technique.Code);
+                        XmlText TechniqueName = xmlDoc.CreateTextNode(technique.Name);
+                        XmlText SerialKeyText = xmlDoc.CreateTextNode(technique.SerialKey);
+                        string ModelCodeValue = technique.Model != null ? technique.Model.Split(new string[] {": "}, StringSplitOptions.RemoveEmptyEntries)[0] : "";
+                        XmlText ModelCodeText = xmlDoc.CreateTextNode(ModelCodeValue);
                         Number.AppendChild(TextNum);
                         serialKey.AppendChild(SerialKeyText);
                         TechniqueCode.AppendChild(TechniqueCodeText);
+                        ModelCode.AppendChild(ModelCodeText);
 
                         Technique.Attributes.Append(serialKey);
                         Technique.Attributes.Append(TechniqueCode);
+                        Technique.Attributes.Append(ModelCode);
 
                         Technique.AppendChild(TechniqueName);
 
@@ -154,6 +160,8 @@ namespace Orders
                     order.AppendChild(Table);
                 }
                 root.AppendChild(order);
+                ord.isChanged = false;
+                App.OrdersDataBase.SaveOrder(ord);
             }
             xmlDoc.Save(Path.Combine(folderPath, fileName));
         }
@@ -179,7 +187,7 @@ namespace Orders
         }
 
         /// <summary>
-        /// Прогрузка данных в бд из файла, полученного из 1с
+        /// Прогрузка данных в бд из файла, полученного от 1с
         /// </summary>
         /// <param name="doc">XML файл, полученного из 1с</param>
         private static void LoadFromXML(XmlDocument doc)
@@ -193,7 +201,7 @@ namespace Orders
                     foreach (XmlNode node2 in node.ChildNodes)
                     {
 
-                        Dictionary<string,string> DataClient = new Dictionary<string,string>
+                        Dictionary<string, string> DataClient = new Dictionary<string, string>
                         {
                             {"Наименование", node2.Attributes.GetNamedItem("Наименование").Value },
                             {"ИНН", node2.Attributes.GetNamedItem("ИНН").Value },
@@ -201,6 +209,31 @@ namespace Orders
                             {"Телефон",node2.Attributes.GetNamedItem("Телефон").Value }
                         };
                         PostCreator.CreateClient(DataClient);
+                    }
+                }
+                else if (node.Name == "ГруппыМоделиВТ")
+                {
+                    foreach (XmlNode node2 in node.ChildNodes)
+                    {
+                        Dictionary<string, string> DataModelGroup = new Dictionary<string, string>
+                        {
+                            { "Код", node2.Attributes.GetNamedItem("Код").Value},
+                            {"Наименование", node2.Attributes.GetNamedItem("Наименование").Value }
+                        };
+                        PostCreator.CreateModelGroup(DataModelGroup);
+                    }
+                }
+                else if (node.Name == "МоделиВТ")
+                {
+                    foreach(XmlNode node2 in node.ChildNodes)
+                    {
+                        Dictionary<string, string> DataModel = new Dictionary<string, string>
+                        {
+                            {"Код", node2.Attributes.GetNamedItem("Код").Value },
+                            {"Наименование", node2.Attributes.GetNamedItem("Наименование").Value },
+                            {"КодГруппы", node2.Attributes.GetNamedItem("Группа").Value }
+                        };
+                        PostCreator.CreateModel(DataModel);
                     }
                 }
                 else if (node.Name == "Аппаратуры")
@@ -212,11 +245,12 @@ namespace Orders
                             {"Код",node2.Attributes.GetNamedItem("Код").Value },
                             {"Наименование",node2.Attributes.GetNamedItem("Наименование").Value },
                             {"Владелец",node2.Attributes.GetNamedItem("Владелец").Value },
-                            {"Серийный",node2.Attributes.GetNamedItem("Серийный").Value}
+                            {"Серийный",node2.Attributes.GetNamedItem("Серийный").Value},
+                            {"КодМодели", node2.Attributes.GetNamedItem("КодМоделиВТ").Value }
                         };
                         PostCreator.CreateTechnique(DataTechnique);
                     }
-                }                
+                }
                 else if (node.Name == "Неисправности")
                 {
                     foreach (XmlNode node2 in node.ChildNodes)
@@ -225,15 +259,15 @@ namespace Orders
                     }
                 }
                 else if (node.Name == "Комплектация")
-                { 
-                    foreach (XmlNode node2 in node.ChildNodes)
-                    {                      
-                        PostCreator.CreateKitElement(node2.Attributes.GetNamedItem("Наименование").Value);                        
-                    }                        
-                }
-                else if(node.Name == "ЗагруженныеДокументы")
                 {
-                    foreach(XmlNode node2 in node.ChildNodes)
+                    foreach (XmlNode node2 in node.ChildNodes)
+                    {
+                        PostCreator.CreateKitElement(node2.Attributes.GetNamedItem("Наименование").Value);
+                    }
+                }
+                else if (node.Name == "ЗагруженныеДокументы")
+                {
+                    foreach (XmlNode node2 in node.ChildNodes)
                     {
                         PostCreator.OrderisLoadChange(node2.Attributes.GetNamedItem("ИД").Value);
                     }

@@ -97,7 +97,8 @@ namespace Orders
                 SendMail = false,
                 Executor = "",
                 Client = "",
-                Comment = ""
+                Comment = "",
+                isChanged = false,
             };
 
             OrderPage orderPage = new OrderPage

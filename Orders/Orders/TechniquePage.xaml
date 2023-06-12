@@ -10,6 +10,8 @@
                 <Label Text="Код: "/>
                 <Label Text="{Binding Code}"/>
             </StackLayout>
+            <Picker x:Name="ModelGroup" Title="Группа моделей ВТ" SelectedItem="{Binding GroupModel}" SelectedIndexChanged="ModelGroup_SelectedIndexChanged"/>
+            <Picker x:Name="Model" Title="Модель" SelectedItem="{Binding Model}"/>
             <Entry Placeholder="Наименование" Text="{Binding Name}"/>
             <Entry Placeholder="Серийный номер" Text="{Binding SerialKey}"/>
             <Grid>

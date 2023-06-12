@@ -17,6 +17,7 @@ namespace Orders
     public partial class OrderPage : ContentPage
     {
 
+        private bool isChanged = false;
         public OrderPage()
         {
             InitializeComponent();
@@ -126,7 +127,6 @@ namespace Orders
             };
 
             Navigation.PushModalAsync(page);
-
         }
 
         private async void DeleteOrder(object sender, EventArgs e) 
@@ -145,7 +145,6 @@ namespace Orders
             Order order = (Order)BindingContext;
             order.Executor = Executor.Text;
             order.Client = (string)ClientList.SelectedItem;
-            order.isLoaded = false;
             order.Comment = Comment.Text ?? "";
             if (string.IsNullOrEmpty(order.Client) || order.Executor == "<Не установлен>")
             {
@@ -153,23 +152,33 @@ namespace Orders
                 return;
             }
 
-            var OrderRows = App.OrdersDataBase.GetRows(int.Parse(OrderNumber.Text));
-            foreach (var row in OrderRows)
+            OrderChanged(order);
+            SaveNotSavedRow();
+            if(isChanged)
             {
-                if (!row.isSaved)
-                {
-
-                    row.isSaved = true;
-                    App.OrdersDataBase.SaveRow(row);
-                }
+                order.isLoaded = false;
+                order.isChanged = true;
             }
+
             App.OrdersDataBase.SaveOrder(order);
             if(string.IsNullOrEmpty(order.Code))
             {
                 order.Code = CodeGenerator.GetCodeForOrder(order);
                 App.OrdersDataBase.UpdateOrder(order);
+            }            
+        }
+        private void SaveNotSavedRow()
+        {
+            var OrderRows = App.OrdersDataBase.GetRows(int.Parse(OrderNumber.Text));
+            foreach (var row in OrderRows)
+            {
+                if (!row.isSaved)
+                {
+                    row.isSaved = true;
+                    isChanged = true;
+                    App.OrdersDataBase.SaveRow(row);
+                }
             }
-            
         }
         private async void Cancel(object sender, EventArgs e) 
         {
@@ -222,7 +231,9 @@ namespace Orders
             { 
                 NameForSearch.IsVisible = false; 
                 NameForSearch.Text = string.Empty;
+                string SelectedClient = (string)ClientList.SelectedItem;
                 FillClientList();
+                ClientList.SelectedItem = SelectedClient;
             }
             else 
             { 
@@ -247,6 +258,15 @@ namespace Orders
             {
                 ClientList.Items.Add(client.Code + ": " + client.Name);
             }
+        }
+
+        private void OrderChanged(Order order)
+        {
+            if (order.Id == 0) return;
+            Order OldData = App.OrdersDataBase.GetOrder(order.Id);
+            isChanged = ((OldData.Client != order.Client) ||
+                (OldData.SendMail != order.SendMail) ||
+                (OldData.Comment != order.Comment));
         }
     }
 }

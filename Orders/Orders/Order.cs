@@ -17,5 +17,6 @@ namespace Orders
         public string Comment { get; set; }
         public bool SendMail { get; set; }
         public bool isLoaded { get; set; }
+        public bool isChanged { get; set; }
     }
 }

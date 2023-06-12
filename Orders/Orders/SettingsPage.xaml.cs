@@ -46,13 +46,15 @@ namespace Orders
 
             if(!settings.CheckSettings())
             {
-                await DisplayAlert("Файл не выгружен!", "Не заполнены настройки!", "ОК");
+                await DisplayAlert("Файл не загружен!", "Не заполнены настройки!", "ОК");
                 return;
             }
             
             LoadStatus.IsVisible = true;
             if (!await FTPConection(settings)) return;
             if(!await UploadingData()) return;
+            if (!await CreateXmlForUpload(settings.Prefix)) return;
+            if (!await UploadToFTP(settings)) return;
             LoadStatus.IsVisible = false;
             ProgressLoad.Progress = 0;
             await DisplayAlert("Готово!", "Загрузка завершена.", "ОК");
@@ -69,7 +71,7 @@ namespace Orders
                 await DisplayAlert("Ошибка FTP соединения!", FTPConectResult, "ОК");
                 return false;
             }
-            await ProgressLoad.ProgressTo(0.2, 500, Easing.Linear);
+            await ProgressLoad.ProgressTo(0.1, 500, Easing.Linear);
             return true;
         }
         private async Task<bool> UploadingData()
@@ -81,6 +83,33 @@ namespace Orders
                 LoadStatus.IsVisible = false;
                 ProgressLoad.Progress = 0;
                 await DisplayAlert("Ошибка чтения xml!", DataUploadStatus, "ОК");
+                return false;
+            }
+            await ProgressLoad.ProgressTo(0.5, 500, Easing.Linear);
+            return true;
+        }
+
+        private async Task<bool> CreateXmlForUpload(string prefix)
+        {
+            string CreatingStatus = await XML.StartUploadXML(folderPath, $"OrdersTo1C_{prefix}.xml");
+            if (CreatingStatus != "Файл создан")
+            {
+                await DisplayAlert("Ошибка создания файла!", CreatingStatus, "ОК");
+                LoadStatus.IsVisible = false;
+                ProgressLoad.Progress = 0;
+                return false;
+            }
+            await ProgressLoad.ProgressTo(0.6, 500, Easing.Linear);
+            return true;
+        }
+        private async Task<bool> UploadToFTP(Settings settings)
+        {
+            string FTPStatus = await DependencyService.Get<IFtpWebRequest>().Upload(settings.FTPAdress, Path.Combine(folderPath, $"OrdersTo1C_{settings.Prefix}.xml"), settings.FTPUser, settings.FTPPassword);
+            if (FTPStatus != "Выгрузка завершена")
+            {
+                await DisplayAlert("Ошибка FTP соединения!", FTPStatus, "ОК");
+                LoadStatus.IsVisible = false;
+                ProgressLoad.Progress = 0;
                 return false;
             }
             await ProgressLoad.ProgressTo(1, 500, Easing.Linear);
