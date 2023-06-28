@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:tables="clr-namespace:Orders.Tables"
+             x:DataType="tables:Technique"
+             x:Class="Orders.TechniquePage"
+             >
+    <ContentPage.Content>
+        <StackLayout>
+            <Label Text="Аппаратура" HorizontalOptions="Center"/>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Код: "/>
+                <Label Text="{Binding Code}"/>
+            </StackLayout>
+            <!--<Picker x:Name="ModelGroup" Title="Группа моделей ВТ" SelectedItem="{Binding GroupModel}" SelectedIndexChanged="ModelGroup_SelectedIndexChanged"/>
+            <Picker x:Name="Model" Title="Модель" SelectedItem="{Binding Model}"/>-->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <!--<Picker x:Name="Client" Grid.Column="0" Grid.Row="0" Title="Клиент" SelectedItem="{Binding Parent}" HorizontalOptions="FillAndExpand" x:FieldModifier="public"/>-->
+                <Entry x:Name="SelectedModel" x:FieldModifier="public" x:DataType="tables:Model" Placeholder="Модель..."  IsReadOnly="True" Text="{Binding Name}"  Grid.Row="0" Grid.Column="0"/>
+                <!--<Button Text="+" Grid.Column="1" Grid.Row="0" Clicked="AddClient" WidthRequest="60"/>-->
+                <Button Text="🔎" Grid.Column="1" Grid.Row="0" Clicked="Button_Clicked" WidthRequest="60"/>
+            </Grid>
+            <Label x:Name="ModelCode" IsVisible="False" x:FieldModifier="public" Text="{Binding ModelCode}"/>
+            <Entry Placeholder="Наименование" Text="{Binding Name}"/>
+            <Entry Placeholder="Серийный номер" Text="{Binding SerialKey}"/>
+            <Label x:Name="ClientCode" IsVisible="False" Text="{Binding ParentCode}" x:FieldModifier="public"/>
+            <Grid x:Name="DataClient"  x:DataType="tables:Client">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <!--<Picker x:Name="Client" Grid.Column="0" Grid.Row="0" Title="Клиент" SelectedItem="{Binding Parent}" HorizontalOptions="FillAndExpand" x:FieldModifier="public"/>-->
+                <Entry x:Name="SelectedClient" Placeholder="Клиент..."  IsReadOnly="True" Text="{Binding Name}"  Grid.Row="0" Grid.Column="0"/>
+                <!--<Button Text="+" Grid.Column="1" Grid.Row="0" Clicked="AddClient" WidthRequest="60"/>-->
+                <Button Text="🔎" Grid.Column="1" Grid.Row="0" Clicked="SearchClient" WidthRequest="60"/>
+            </Grid>
+            <Button Text="Сохранить" Clicked="SaveTechnique"/>
+            <Button Text="Удалить" Clicked="DeleteTechnique"/>
+            <Button Text="Отменить" Clicked="Cancel"/>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

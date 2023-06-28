@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:tables="clr-namespace:Orders.Tables"
+             x:Class="Orders.OrderPage"
+             Title="Квитанция">    
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout>
+                <Label Text="Квитанция" HorizontalOptions="Center"/>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="Загружена в 1с: " VerticalOptions="Center"/>
+                    <CheckBox x:Name="isLoaded" IsChecked="{Binding isLoaded}" IsEnabled="False" Color="DarkGray"/>
+                </StackLayout>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="Номер квитанции: "/>
+                    <Label x:Name="OrderNumber" Text="{Binding Number}"/>
+                    <Label Text="Дата: "/>
+                    <Label x:Name="Date" Text="{Binding Date}"/>
+                </StackLayout>
+                <!--<StackLayout Orientation="Horizontal">
+                    <Label Text="Дата: "/>
+                    <Label x:Name="Date" Text="{Binding Date}"/>
+                </StackLayout>-->
+                <!--<StackLayout Orientation="Horizontal">
+                    <Label Text="Поиск клиента: " Grid.Column="0" Grid.Row="0" VerticalOptions="Center"/>
+                    <CheckBox x:Name="SearchClient" Grid.Column="1" Grid.Row="0" CheckedChanged="EnableSearch"/>
+                </StackLayout>-->
+                <!--<Entry x:Name="NameForSearch" Unfocused="StartSearch" Placeholder="Наименование для поиска..." IsVisible="false" Grid.Column="2" Grid.Row="0"/>-->
+                <Label x:Name="ClientCode" IsVisible="False" x:FieldModifier="public" Text="{Binding ClientCode}"/>
+                <StackLayout x:Name="DataClient" x:DataType="tables:Client">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <!--<Picker x:Name="ClientList" Title="Клиент" x:DataType="models:ClientModel"  ItemsSource="{Binding ClientsList}" ItemDisplayBinding="{Binding Name}" Grid.Column="0" Grid.Row="0" SelectedItem="{Binding SelectedClient}" x:FieldModifier="public" HorizontalOptions="FillAndExpand" SelectedIndexChanged="SelectedClient" />-->
+                        <Entry x:Name="SelectedClient" Placeholder="Клиент..."  IsReadOnly="True" Text="{Binding Name}"  Grid.Row="0" Grid.Column="0"/>
+                        <Button Grid.Column="1" Grid.Row="0" Text="+" Clicked="AddClient" WidthRequest="40"/>
+                        <Button Grid.Column="2" Grid.Row="0" Text="🖊" Clicked="OpenClient" WidthRequest="40"/>
+                        <Button Grid.Column="3" Grid.Row="0" Text="🔎" Clicked="SearchClient" WidthRequest="40"/>
+                    </Grid>
+                
+                    <!--<StackLayout x:Name="DataClient" BindingContext="{Binding Source={x:Reference SelectedClient}, Path=BindingContext}" x:DataType="tables:Client">-->
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="ИНН: "/>
+                        <Label x:Name="Inn" Text="{Binding Inn}"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="Email: "/>
+                        <Label x:Name="ClientEmail" Text="{Binding Email}"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="Телефон: "/>
+                            <Label x:Name="Phone" Text="{Binding PhoneNumber}"/>
+                    </StackLayout>
+                </StackLayout>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="Исполнитель: "/>
+                    <Label Text="{Binding Executor}" x:Name="Executor"/>
+                </StackLayout>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="Отправить E-mail: " VerticalOptions="Center"/>
+                    <CheckBox x:Name="SendEmail" IsChecked="{Binding SendMail}"/>
+                </StackLayout>
+                <Button Text="Добавить технику" Clicked="AddRow"/>
+                <ListView x:Name="OrderRows" HeightRequest="100" ItemsSource="{Binding OrderTableRowList}" ItemSelected="OnSelected" HasUnevenRows="True">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <ViewCell.View>
+                                    <StackLayout>
+                                        <StackLayout Orientation="Horizontal">
+                                            <Label Text="Номер: "/>
+                                            <Label x:Name="NumberRow"  Text="{Binding Number}" FontSize="Small"/>
+                                        </StackLayout>
+                                        <StackLayout Orientation="Horizontal">
+                                            <Label Text="Техника: "/>
+                                            <Label x:Name="TechnicRow" Text="{Binding Technic}" FontSize="Small"/>
+                                        </StackLayout>
+                                        <StackLayout Orientation="Horizontal">
+                                            <Label Text="Неисправность: "/>
+                                            <Label x:Name="WorkRow" Text="{Binding Malfunction}" FontSize="Small"/>
+                                        </StackLayout>
+                                    </StackLayout>
+                                </ViewCell.View>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <Entry x:Name="Comment" Placeholder="Комментарий..." Text="{Binding Comment}"/>
+                <Button Text="Записать" Clicked="SaveOrder"/>
+                <Button Text="Удалить" Clicked="DeleteOrder"/>
+                <Button Text="Отмена" Clicked="Cancel"/>
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>    
+</ContentPage>

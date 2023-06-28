@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Orders.OrdersView"
+             Title="Квитанции">
+    <ContentPage.Content>
+        <StackLayout>
+            <StackLayout x:Name="UploadStatus" IsVisible="false">
+                <Label Text="Выгрузка" HorizontalOptions="Center"/>
+                <ProgressBar x:Name="UploadProgress"/>
+            </StackLayout>
+            <ListView x:Name="OrdersList" ItemsSource="{Binding OrderList}" ItemSelected="OnSelected" HasUnevenRows="True" SeparatorColor="Black">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <ViewCell.View>
+                                <StackLayout>
+                                    <StackLayout Orientation="Horizontal">
+                                        <Label Text="Номер: "/>
+                                        <Label Text="{Binding Number}"/>
+                                    </StackLayout>
+                                    <StackLayout Orientation="Horizontal">
+                                        <Label Text="Дата: "/>
+                                        <Label Text="{Binding Date}"/>
+                                    </StackLayout>
+                                    <StackLayout Orientation="Horizontal">
+                                        <Label Text="Клиент: "/>
+                                        <Label Text="{Binding Client}"/>
+                                    </StackLayout>
+                                </StackLayout>
+                            </ViewCell.View>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Button Text="Создать квитанцию" Clicked="CreateOrder"/>
+            <!--<Button Text="Выгрузить" Clicked="SaveXML"/>-->
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

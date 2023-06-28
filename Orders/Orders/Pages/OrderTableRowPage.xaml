@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:tables="clr-namespace:Orders.Tables"
+             x:DataType="tables:OrderTableRow"
+             x:Class="Orders.OrderTableRowPage">
+    <ContentPage.Content>
+        <StackLayout>
+            <Label Text="{Binding Number}"/>
+            <Label x:Name="TechniqueCode" IsVisible="False" x:FieldModifier="public" Text="{Binding TechniqueCode}"/>
+            <StackLayout x:Name="TechniqueData" x:DataType="tables:Technique">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <!--<Picker x:Name="Techniques" Grid.Column="0" Grid.Row="0" SelectedItem="{Binding Technic}" Title="Техника" HorizontalOptions="FillAndExpand" x:FieldModifier="public" />-->
+                    <Entry x:Name="SelectedTechnique" Placeholder="Аппаратура..."  IsReadOnly="True" Text="{Binding Name}"  Grid.Row="0" Grid.Column="0"/>
+                    <Button Text="+" Grid.Column="1" Grid.Row="0" Clicked="AddTechniques" WidthRequest="40"/>
+                    <Button Text="🖊" Grid.Column="2" Grid.Row="0" Clicked="OpenTechnique" WidthRequest="40"/>
+                    <Button Text="🔎" Grid.Column="3" Grid.Row="0" Clicked="Button_Clicked" WidthRequest="40"/>
+                </Grid>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="Серийный номер: "/>
+                    <Label Text="{Binding SerialKey}"/>
+                </StackLayout>
+            </StackLayout>
+            <Entry x:Name="Malfunction" Text="{Binding Malfunction}" Placeholder="Неисправность" Completed="EntryCompleted" Unfocused="EntryCompleted"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>                    
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>                    
+                </Grid.RowDefinitions>
+                <Picker x:Name="Malfunctions" Grid.Column="0" Grid.Row="0" Title=" Список неисправностей" HorizontalOptions="FillAndExpand" SelectedIndexChanged="SelectedMalfunction" x:FieldModifier="public"/>
+                <Button Text="+"  Grid.Column="1" Grid.Row="0" Clicked="AddMalfunctions" WidthRequest="60"/>
+            </Grid>
+            <Entry x:Name="Equipment" Text="{Binding Equipment}" Placeholder="Комплектация" Completed="EntryCompleted" Unfocused="EntryCompleted"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Picker x:Name="Equipments" Grid.Column="0" Grid.Row="0" Title=" Список комплектующих" HorizontalOptions="FillAndExpand" SelectedIndexChanged="SelectedKitElement" x:FieldModifier="public"/>
+                <Button Text="+" Grid.Column="1" Grid.Row="0" Clicked="AddKitElement" WidthRequest="60"/>
+            </Grid>
+            <Button Text="Сохранить" Clicked="SaveRow"/>
+            <Button Text="Удалить" Clicked="DeleteRow"/>
+            <Button Text="Отмена" Clicked="Cancel"/>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

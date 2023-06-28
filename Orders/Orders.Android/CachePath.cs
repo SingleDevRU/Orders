@@ -5,6 +5,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Java.Security;
+using Orders.Core.Interfaces;
 using Orders.Droid;
 using System;
 using System.Collections.Generic;

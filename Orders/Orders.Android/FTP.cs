@@ -8,6 +8,7 @@ using System.Net;
 using System.Runtime.CompilerServices;
 using Xamarin.Forms.PlatformConfiguration;
 using System.Threading.Tasks;
+using Orders.Core.Interfaces;
 
 [assembly: Xamarin.Forms.Dependency(typeof(FTP))]
 namespace Orders.Droid
